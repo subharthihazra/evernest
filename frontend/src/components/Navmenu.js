@@ -41,15 +41,7 @@ function Navmenu() {
           <NavigationMenu.Trigger className="hover:text-yellow-900 px-6 transition-colors">
             KIDS
           </NavigationMenu.Trigger>
-          <ContentPane>
-            <ListItem>Printed Tshirts</ListItem>
-            <ListItem>Full Sleeve Tshirts</ListItem>
-            <ListItem>Half Sleeve Tshirts</ListItem>
-            <ListItem>Shirts</ListItem>
-            <ListItem>Joggers</ListItem>
-            <ListItem>Trousers</ListItem>
-            <ListItem>Toys</ListItem>
-          </ContentPane>
+          <ContentPane></ContentPane>
         </NavigationMenu.Item>
 
         <NavigationMenu.Item>
