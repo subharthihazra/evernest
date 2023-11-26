@@ -11,7 +11,7 @@ import { toggleColorMode } from "../colorMode";
 function Header() {
   return (
     <div className="sticky top-2 mx-auto z-[1] lg:w-2/3">
-      <div className="absolute left-2 right-2 z-[1] bg-white dark:bg-[rgb(15,96,77)] shadow-lg px-3 py-3 rounded-2xl flex flex-col gap-4">
+      <div className="absolute left-2 right-2 z-[1] bg-[rgba(255,255,255,0.8)] dark:bg-[rgb(15,96,77,0.8)] shadow-[0_5px_15px_3px_rgba(0,0,0,0.1),0_5px_3px_1px_rgba(0,0,0,0.05)] px-3 py-3 rounded-2xl flex flex-col gap-4 backdrop-blur">
         {/* shadow-[0_0_15px_3px_rgba(0,0,0,0.1),0_0_3px_1px_rgba(0,0,0,0.05)] */}
         {/* <div>Future: Header Notices</div> */}
         <div className="flex flex-row place-content-between">

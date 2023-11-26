@@ -24,21 +24,21 @@ module.exports = {
         getIn: {
           from: {
             opacity: 0,
-            transform: "rotateX(-10deg) translateY(-15%) scaleY(0.9)",
+            height: "0",
           },
           to: {
             opacity: 1,
-            transform: "rotateX(0deg) translateY(0%) scaleY(1)",
+            height: "var(--radix-navigation-menu-viewport-height)",
           },
         },
         getOut: {
           from: {
             opacity: 1,
-            transform: "rotateX(0deg) translateY(0%) scaleY(1)",
+            height: "var(--radix-navigation-menu-viewport-height)",
           },
           to: {
             opacity: 0,
-            transform: "rotateX(-10deg) translateY(-15%) scaleY(0.95)",
+            height: "0",
           },
         },
         fadeIn: {

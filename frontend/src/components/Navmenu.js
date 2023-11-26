@@ -46,18 +46,12 @@ function Navmenu() {
           </ContentPane>
         </NavigationMenu.Item>
 
-        <NavigationMenu.Item>
-          <NavigationMenu.Link className="hover:text-blue-500 px-6 transition-colors">
-            MORE
-          </NavigationMenu.Link>
-        </NavigationMenu.Item>
-
-        <NavigationMenu.Indicator className="absolute z-[-1] transition-all data-[state=visible]:animate-fadeIn data-[state=hidden]:animate-fadeOut">
+        <NavigationMenu.Indicator className="absolute z-[2] transition-all data-[state=visible]:animate-fadeIn data-[state=hidden]:animate-fadeOut">
           <div className="bg-black dark:bg-white h-0.5 w-[calc(100%-1.5rem*2)] m-auto transition-all"></div>
         </NavigationMenu.Indicator>
       </NavigationMenu.List>
 
-      <NavigationMenu.Viewport className="w-full z-[-2] absolute left-0 bg-white dark:bg-[rgb(15,96,77)] rounded-b-2xl shadow-lg overflow-hidden h-[var(--radix-navigation-menu-viewport-height)] data-[state=open]:animate-getIn data-[state=closed]:animate-getOut" />
+      <NavigationMenu.Viewport className="relative w-full z-[1] left-0 overflow-hidden h-[var(--radix-navigation-menu-viewport-height)] data-[state=open]:animate-getIn data-[state=closed]:animate-getOut" />
     </NavigationMenu.Root>
   );
 }
