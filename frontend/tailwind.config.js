@@ -24,7 +24,7 @@ module.exports = {
         getIn: {
           from: {
             opacity: 0,
-            transform: "rotateX(-10deg) translateY(-50%) scaleY(0.9)",
+            transform: "rotateX(-10deg) translateY(-15%) scaleY(0.9)",
           },
           to: {
             opacity: 1,
@@ -38,7 +38,7 @@ module.exports = {
           },
           to: {
             opacity: 0,
-            transform: "rotateX(-10deg) translateY(-50%) scaleY(0.95)",
+            transform: "rotateX(-10deg) translateY(-15%) scaleY(0.95)",
           },
         },
         fadeIn: {
