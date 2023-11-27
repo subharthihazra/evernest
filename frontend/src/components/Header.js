@@ -109,12 +109,8 @@ function CartButton() {
 
 function UserButton() {
   return (
-    <HeaderLogo
-      href="https://google.com"
-      className="bg-red-500"
-      target="_blank"
-    >
-      <AiOutlineUser className="bg-yellow-200" />
+    <HeaderLogo>
+      <AiOutlineUser />
     </HeaderLogo>
   );
 }
@@ -127,7 +123,6 @@ function HeaderLogo({
   className: boxPropsClassName = "",
   ...otherBoxProps
 }) {
-  console.log(children);
   const { className: linkPropsClassName = "", ...otherLinkProps } = linkProps;
 
   let childrenWithProps;
@@ -140,8 +135,6 @@ function HeaderLogo({
       ...otherLogoProps,
     });
   }
-
-  console.log("xx", childrenWithProps);
 
   return (
     <a
