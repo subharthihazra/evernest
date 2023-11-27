@@ -14,6 +14,19 @@ function Header() {
   const [searchbarOpen, setSearchbarOpen] = useState(false);
   const searchbarRef = useRef(null);
 
+  function handleSearchbarOpen() {
+    setSearchbarOpen(true);
+    setTimeout(() => {
+      searchbarRef.current.focus();
+    }, 0);
+  }
+
+  function handleSearchbarClose() {
+    setSearchbarOpen(false);
+
+    searchbarRef.current.value = "";
+  }
+
   return (
     <div className="sticky top-2 mx-auto z-[1] lg:w-2/3">
       <div className="absolute left-2 right-2 lg:left-0 lg:right-0 z-[1] bg-[rgba(255,255,255,0.9)] dark:bg-[rgb(15,96,77,0.8)] shadow-[0_10px_5px_-8px_rgba(0,0,0,0.2),0_3px_15px_3px_rgba(0,0,0,0.1),0_3px_3px_1px_rgba(0,0,0,0.05)] px-3 py-3 rounded-2xl flex flex-col gap-4 backdrop-blur">
@@ -24,16 +37,16 @@ function Header() {
             <MenuButton />
             <CompanyLogo />
           </LeftPane>
-          <CloseSearchButton
-            searchbarOpen={searchbarOpen}
-            setSearchbarOpen={setSearchbarOpen}
-          />
           <Searchbar
             searchbarRef={searchbarRef}
             searchbarOpen={searchbarOpen}
           />
+          <CloseSearchButton
+            searchbarOpen={searchbarOpen}
+            onSearchbarClose={handleSearchbarClose}
+          />
           <RightPane searchbarOpen={searchbarOpen}>
-            <SearchButton setSearchbarOpen={setSearchbarOpen} />
+            <SearchButton onSearchbarOpen={handleSearchbarOpen} />
             <ThemeButton />
             <CartButton />
             <UserButton />
@@ -59,6 +72,15 @@ function LeftPane({ searchbarOpen, children }) {
     </div>
   );
 }
+
+function MenuButton() {
+  return (
+    <HeaderLogo>
+      <AiOutlineMenu />
+    </HeaderLogo>
+  );
+}
+
 function CompanyLogo({ darkm = false }) {
   return (
     <HeaderLogo>
@@ -78,7 +100,7 @@ function CompanyLogo({ darkm = false }) {
 function Searchbar({ searchbarRef, searchbarOpen }) {
   return (
     <div
-      className={`sm:absolute sm:w-1/3 sm:left-1/3 sm:block ${
+      className={`sm:absolute w-full sm:w-1/3 sm:left-1/3 sm:block ${
         !searchbarOpen && "hidden"
       }`}
     >
@@ -99,21 +121,13 @@ function Searchbar({ searchbarRef, searchbarOpen }) {
   );
 }
 
-function CloseSearchButton({ searchbarOpen, setSearchbarOpen }) {
+function CloseSearchButton({ searchbarOpen, onSearchbarClose }) {
   return (
     <HeaderLogo
-      className={`${!searchbarOpen && "hidden"}`}
-      onClick={() => setSearchbarOpen(false)}
+      className={`sm:hidden ${!searchbarOpen && "hidden"}`}
+      onClick={onSearchbarClose}
     >
       <AiOutlineCloseCircle />
-    </HeaderLogo>
-  );
-}
-
-function SearchButton({ setSearchbarOpen }) {
-  return (
-    <HeaderLogo className="sm:hidden" onClick={() => setSearchbarOpen(true)}>
-      <AiOutlineSearch />
     </HeaderLogo>
   );
 }
@@ -129,11 +143,11 @@ function RightPane({ searchbarOpen, children }) {
     </div>
   );
 }
-function Menu() {}
-function MenuButton() {
+
+function SearchButton({ onSearchbarOpen }) {
   return (
-    <HeaderLogo>
-      <AiOutlineMenu />
+    <HeaderLogo className="sm:hidden" onClick={onSearchbarOpen}>
+      <AiOutlineSearch />
     </HeaderLogo>
   );
 }
@@ -200,5 +214,7 @@ function HeaderLogo({
     </a>
   );
 }
+
+function Menu() {}
 
 export default Header;
