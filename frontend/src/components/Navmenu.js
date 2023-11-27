@@ -2,7 +2,7 @@ import * as NavigationMenu from "@radix-ui/react-navigation-menu";
 
 function Navmenu() {
   return (
-    <NavigationMenu.Root className="hidden sm:block">
+    <NavigationMenu.Root>
       <NavigationMenu.List className="flex place-content-center">
         <NavigationMenu.Item>
           <MenuTrigger>MEN</MenuTrigger>
