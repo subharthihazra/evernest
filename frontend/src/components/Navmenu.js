@@ -1,50 +1,20 @@
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
+import menuData from "../data/menu";
 
 function Navmenu() {
   return (
     <NavigationMenu.Root>
       <NavigationMenu.List className="flex place-content-center">
-        <NavigationMenu.Item>
-          <MenuTrigger>MEN</MenuTrigger>
-          <ContentPane>
-            <ListItem>Printed Tshirts</ListItem>
-            <ListItem>Oversized Tshirts</ListItem>
-            <ListItem>Full Sleeve Tshirts</ListItem>
-            <ListItem>Half Sleeve Tshirts</ListItem>
-            <ListItem>Polo Tshirts</ListItem>
-            <ListItem>Sweatshirts</ListItem>
-            <ListItem>Shirts</ListItem>
-            <ListItem>Joggers</ListItem>
-          </ContentPane>
-        </NavigationMenu.Item>
-
-        <NavigationMenu.Item>
-          <MenuTrigger>WOMEN</MenuTrigger>
-
-          <ContentPane>
-            <ListItem>Printed Tshirts</ListItem>
-            <ListItem>Oversized Tshirts</ListItem>
-            <ListItem>Full Sleeve Tshirts</ListItem>
-            <ListItem>Half Sleeve Tshirts</ListItem>
-            <ListItem>Polo Tshirts</ListItem>
-            <ListItem>Sweatshirts</ListItem>
-            <ListItem>Shirts</ListItem>
-            <ListItem>Joggers</ListItem>
-          </ContentPane>
-        </NavigationMenu.Item>
-
-        <NavigationMenu.Item>
-          <MenuTrigger>KIDS</MenuTrigger>
-          <ContentPane>
-            <ListItem>Printed Tshirts</ListItem>
-            <ListItem>Full Sleeve Tshirts</ListItem>
-            <ListItem>Half Sleeve Tshirts</ListItem>
-            <ListItem>Shirts</ListItem>
-            <ListItem>Joggers</ListItem>
-            <ListItem>Trousers</ListItem>
-            <ListItem>Toys</ListItem>
-          </ContentPane>
-        </NavigationMenu.Item>
+        {menuData.map((option) => (
+          <NavigationMenu.Item key={option.trigger}>
+            <MenuTrigger>{option.trigger}</MenuTrigger>
+            <ContentPane>
+              {option?.content.map((subOption) => (
+                <ListItem key={subOption}>{subOption}</ListItem>
+              ))}
+            </ContentPane>
+          </NavigationMenu.Item>
+        ))}
 
         <NavigationMenu.Indicator className="absolute z-[2] transition-all data-[state=visible]:animate-fadeIn data-[state=hidden]:animate-fadeOut">
           <div className="bg-black dark:bg-white h-0.5 w-[calc(100%-1.5rem*2)] m-auto transition-all"></div>
