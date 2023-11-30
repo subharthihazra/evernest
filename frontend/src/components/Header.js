@@ -11,12 +11,18 @@ import { toggleColorMode } from "../colorMode";
 import React, { useRef, useState } from "react";
 
 function Header() {
+  const [menuOpen, setMenuOpen] = useState(false);
   const [searchbarOpen, setSearchbarOpen] = useState(false);
   const searchbarRef = useRef(null);
+
+  function handleMenuOpen() {}
+
+  function handleMenuClose() {}
 
   function handleSearchbarOpen() {
     setSearchbarOpen(true);
     setTimeout(() => {
+      // check if better method exists
       searchbarRef.current.focus();
     }, 0);
   }
@@ -34,7 +40,7 @@ function Header() {
         {/* <div>Future: Header Notices</div> */}
         <div className="flex flex-row place-content-between">
           <LeftPane searchbarOpen={searchbarOpen}>
-            <MenuButton />
+            <MenuButton onMenuOpen={handleMenuOpen} />
             <CompanyLogo />
           </LeftPane>
           <Searchbar
@@ -56,7 +62,7 @@ function Header() {
           <Navmenu />
         </div>
       </div>
-      <Menu />
+      <Menu onMenuClose={handleMenuClose} />
     </div>
   );
 }
@@ -73,9 +79,9 @@ function LeftPane({ searchbarOpen, children }) {
   );
 }
 
-function MenuButton() {
+function MenuButton({ onMenuOpen }) {
   return (
-    <HeaderLogo>
+    <HeaderLogo linkProps={{ className: "sm:hidden" }} onClick={onMenuOpen}>
       <AiOutlineMenu />
     </HeaderLogo>
   );
@@ -111,7 +117,7 @@ function Searchbar({ searchbarRef, searchbarOpen }) {
 
         <input
           ref={searchbarRef}
-          className="peer h-full w-full outline-none text-lg bg-transparent"
+          className="h-full w-full outline-none text-lg bg-transparent"
           type="text"
           id="search"
           placeholder="Search Something ..."
@@ -146,7 +152,10 @@ function RightPane({ searchbarOpen, children }) {
 
 function SearchButton({ onSearchbarOpen }) {
   return (
-    <HeaderLogo className="sm:hidden" onClick={onSearchbarOpen}>
+    <HeaderLogo
+      linkProps={{ className: "sm:hidden" }}
+      onClick={onSearchbarOpen}
+    >
       <AiOutlineSearch />
     </HeaderLogo>
   );
