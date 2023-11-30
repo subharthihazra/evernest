@@ -20,42 +20,42 @@ function FirstPage() {
 
 function ProductShowcase() {
   return (
-    <div className="product-showcase px-3 lg:px-2">
-      <div className="grid grid-cols-12 grid-rows-[repeat(18,minmax(0,1fr))] w-full gap-5 aspect-[1/1.5]">
+    <div className="product-showcase px-3 sm:px-8 md:px-6 lg:px-2">
+      <div className="grid grid-cols-8 md:grid-cols-12 grid-rows-[repeat(23,minmax(0,1fr))] md:grid-rows-[repeat(16,minmax(0,1fr))] w-full gap-3 sm:gap-5 md:aspect-[1/1.5] aspect-[1/3]">
         <ProductShowcaseItem
-          className="col-start-9 col-end-13 row-start-2 row-end-6"
+          className="md:col-start-9 md:col-end-13 md:row-start-2 md:row-end-6 col-start-1 col-end-5 row-start-2 row-end-7"
           src="./assets/images/dispimg_5.jpeg"
         />
         <ProductShowcaseItem
-          className="col-start-5 col-end-9 row-start-1 row-end-5"
+          className="md:col-start-5 md:col-end-9 md:row-start-1 md:row-end-5 col-start-5 col-end-9 row-start-1 row-end-5"
           src="./assets/images/dispimg_6.jpeg"
         />
         <ProductShowcaseItem
-          className="col-start-1 col-end-5 row-start-2 row-end-[10]"
+          className="md:col-start-1 md:col-end-5 md:row-start-2 md:row-end-[10] col-start-5 col-end-9 row-start-5 row-end-[12]"
           src="./assets/images/dispimg_4.jpeg"
         />
         <ProductShowcaseItem
-          className="col-start-5 col-end-9 row-start-5 row-end-[9]"
+          className="md:col-start-5 md:col-end-9 md:row-start-5 md:row-end-[9] col-start-1 col-end-5 row-start-7 row-end-[12]"
           src="./assets/images/dispimg_10.jpeg"
         />
         <ProductShowcaseItem
-          className="col-start-9 col-end-12 row-start-6 row-end-[9]"
+          className="md:col-start-9 md:col-end-12 md:row-start-6 md:row-end-[9] col-start-2 col-end-5 row-start-[16] row-end-[19]"
           src="./assets/images/dispimg_2.jpeg"
         />
         <ProductShowcaseItem
-          className="col-start-5 col-end-13 row-start-[9] row-end-[13]"
+          className="md:col-start-5 md:col-end-13 md:row-start-[9] md:row-end-[13] col-start-1 col-end-9 row-start-[12] row-end-[16]"
           src="./assets/images/dispimg_1.jpeg"
         />
         <ProductShowcaseItem
-          className="col-start-2 col-end-5 row-start-[10] row-end-[13]"
+          className="md:col-start-2 md:col-end-5 md:row-start-[10] md:row-end-[13] col-start-5 col-end-8 row-start-[20] row-end-[23]"
           src="./assets/images/dispimg_3.jpeg"
         />
         <ProductShowcaseItem
-          className="col-start-3 col-end-7 row-start-[13] row-end-[17]"
+          className="md:col-start-3 md:col-end-7 md:row-start-[13] md:row-end-[17] col-start-1 col-end-5 row-start-[19] row-end-[23]"
           src="./assets/images/dispimg_8.jpeg"
         />
         <ProductShowcaseItem
-          className="col-start-7 col-end-11 row-start-[13] row-end-[17]"
+          className="md:col-start-7 md:col-end-11 md:row-start-[13] md:row-end-[17]  col-start-5 col-end-9 row-start-[16] row-end-[20]"
           src="./assets/images/dispimg_7.jpeg"
         />
       </div>
@@ -65,7 +65,9 @@ function ProductShowcase() {
 
 function ProductShowcaseItem({ className, src }) {
   return (
-    <div className={`bg-zinc-200 ${className} rounded-3xl overflow-hidden`}>
+    <div
+      className={`bg-zinc-200 ${className} rounded-2xl sm:rounded-3xl overflow-hidden`}
+    >
       <img src={src} className="object-cover h-full w-full" />
     </div>
   );
