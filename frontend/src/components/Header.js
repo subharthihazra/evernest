@@ -1,23 +1,36 @@
-import Navmenu from "./Navmenu";
+import React, { useRef, useState } from "react";
+import * as Accordion from "@radix-ui/react-accordion";
 import {
   AiOutlineMenu,
   AiOutlineShoppingCart,
   AiOutlineUser,
   AiOutlineSearch,
   AiOutlineCloseCircle,
+  AiOutlineClose,
 } from "react-icons/ai";
 import { FiMoon, FiSun } from "react-icons/fi";
+import { IoChevronDownSharp } from "react-icons/io5";
 import { toggleColorMode } from "../colorMode";
-import React, { useRef, useState } from "react";
+import Navmenu from "./Navmenu";
+import menuData from "../data/menu";
 
 function Header() {
-  const [menuOpen, setMenuOpen] = useState(false);
+  const [menuOpen, setMenuOpen] = useState("closed");
   const [searchbarOpen, setSearchbarOpen] = useState(false);
   const searchbarRef = useRef(null);
 
-  function handleMenuOpen() {}
+  function handleMenuOpen() {
+    setMenuOpen("open");
+  }
 
-  function handleMenuClose() {}
+  function handleMenuClose() {
+    if (menuOpen !== "closing" && menuOpen !== "closing") {
+      setMenuOpen("closing");
+      setTimeout(() => {
+        setMenuOpen("closed");
+      }, 300);
+    }
+  }
 
   function handleSearchbarOpen() {
     setSearchbarOpen(true);
@@ -62,7 +75,7 @@ function Header() {
           <Navmenu />
         </div>
       </div>
-      <Menu onMenuClose={handleMenuClose} />
+      <Menu menuOpen={menuOpen} onMenuClose={handleMenuClose} />
     </div>
   );
 }
@@ -81,7 +94,11 @@ function LeftPane({ searchbarOpen, children }) {
 
 function MenuButton({ onMenuOpen }) {
   return (
-    <HeaderLogo linkProps={{ className: "sm:hidden" }} onClick={onMenuOpen}>
+    <HeaderLogo
+      className="cursor-pointer"
+      linkProps={{ className: "sm:hidden" }}
+      onClick={onMenuOpen}
+    >
       <AiOutlineMenu />
     </HeaderLogo>
   );
@@ -130,7 +147,7 @@ function Searchbar({ searchbarRef, searchbarOpen }) {
 function CloseSearchButton({ searchbarOpen, onSearchbarClose }) {
   return (
     <HeaderLogo
-      className={`sm:hidden ${!searchbarOpen && "hidden"}`}
+      className={`sm:hidden ml-2 cursor-pointer ${!searchbarOpen && "hidden"}`}
       onClick={onSearchbarClose}
     >
       <AiOutlineCloseCircle />
@@ -153,6 +170,7 @@ function RightPane({ searchbarOpen, children }) {
 function SearchButton({ onSearchbarOpen }) {
   return (
     <HeaderLogo
+      className="cursor-pointer"
       linkProps={{ className: "sm:hidden" }}
       onClick={onSearchbarOpen}
     >
@@ -163,7 +181,7 @@ function SearchButton({ onSearchbarOpen }) {
 
 function ThemeButton() {
   return (
-    <HeaderLogo onClick={toggleColorMode}>
+    <HeaderLogo className="cursor-pointer" onClick={toggleColorMode}>
       <FiSun className="h-8 w-8 hidden dark:block" />
       <FiMoon className="h-8 w-8 dark:hidden" />
     </HeaderLogo>
@@ -224,6 +242,72 @@ function HeaderLogo({
   );
 }
 
-function Menu() {}
+function Menu({ menuOpen, onMenuClose }) {
+  return (
+    <div
+      className={`fixed z-[10] sm:hidden w-full h-full overflow-hidden ${
+        menuOpen === "open"
+          ? "translate-x-0"
+          : menuOpen === "closed"
+          ? "translate-x-[-100%]"
+          : ""
+      }`}
+    >
+      <div
+        className={`fixed z-[1] sm:hidden  w-full h-full transition-all duration-300 ${
+          menuOpen === "open"
+            ? "bg-[rgba(0,0,0,0.3)] backdrop-blur-sm"
+            : "bg-transparent backdrop-blur-none"
+        }`}
+        onClick={onMenuClose}
+      ></div>
+      <div
+        key="Menu"
+        className={`fixed z-[2] flex flex-col gap-4 px-7 py-6 overflow-auto bg-white dark:bg-black w-[85%] h-full transition-all duration-300 shadow-[0px_3px_5px_2px_rgba(0,0,0,0.5),0px_5px_12px_2px_rgba(0,0,0,0.5)] ${
+          menuOpen === "open" ? "translate-x-0" : "translate-x-[-100%]"
+        }`}
+      >
+        <div className="flex flex-row w-full">
+          <div className="grow text-2xl place-self-center cursor-default">
+            Evernest
+          </div>
+          <HeaderLogo className="cursor-pointer" onClick={onMenuClose}>
+            <AiOutlineClose />
+          </HeaderLogo>
+        </div>
+        <div>
+          <Accordion.Root type="multiple">
+            {menuData.map((option) => (
+              <Accordion.Item
+                key={option?.trigger}
+                value={option?.trigger}
+                className=""
+              >
+                <Accordion.Header>
+                  <Accordion.Trigger className="flex flex-row group py-1 my-2 text-[20px]">
+                    {option?.trigger}
+                    <IoChevronDownSharp
+                      className="ease-[cubic-bezier(0.87,_0,_0.13,_1)] transition-transform duration-300 group-data-[state=open]:rotate-180 place-self-center ml-2"
+                      aria-hidden
+                    />
+                  </Accordion.Trigger>
+                </Accordion.Header>
+                <Accordion.Content className="data-[state=open]:animate-slideDown group data-[state=closed]:animate-slideUp overflow-hidden text-[15px] bg-slate-100 dark:bg-[rgb(15,96,77,0.8)] rounded-2xl">
+                  <div className="flex flex-col p-3 gap-2 group-data-[state=open]:opacity-1 group-data-[state=closed]:opacity-0 transition-opacity duration-300">
+                    {option?.content?.map((subOption) => (
+                      <a key={subOption}>
+                        <div className="p-2 text-[16px]">{subOption}</div>
+                      </a>
+                    ))}
+                  </div>
+                </Accordion.Content>
+              </Accordion.Item>
+            ))}
+          </Accordion.Root>
+        </div>
+      </div>
+    </div>
+  );
+}
 
 export default Header;

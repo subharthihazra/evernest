@@ -6,10 +6,10 @@ function Navmenu() {
     <NavigationMenu.Root>
       <NavigationMenu.List className="flex place-content-center">
         {menuData.map((option) => (
-          <NavigationMenu.Item key={option.trigger}>
-            <MenuTrigger>{option.trigger}</MenuTrigger>
+          <NavigationMenu.Item key={option?.trigger}>
+            <MenuTrigger>{option?.trigger}</MenuTrigger>
             <ContentPane>
-              {option?.content.map((subOption) => (
+              {option?.content?.map((subOption) => (
                 <ListItem key={subOption}>{subOption}</ListItem>
               ))}
             </ContentPane>

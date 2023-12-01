@@ -41,6 +41,14 @@ module.exports = {
             height: "0",
           },
         },
+        slideDown: {
+          from: { height: 0 },
+          to: { height: "var(--radix-accordion-content-height)" },
+        },
+        slideUp: {
+          from: { height: "var(--radix-accordion-content-height)" },
+          to: { height: 0 },
+        },
         fadeIn: {
           from: { opacity: 0 },
           to: { opacity: 1 },
@@ -59,6 +67,8 @@ module.exports = {
         enterFromRight: "enterFromRight 250ms ease",
         exitToLeft: "exitToLeft 250ms ease",
         exitToRight: "exitToRight 250ms ease",
+        slideDown: "slideDown 300ms cubic-bezier(0.87, 0, 0.13, 1)",
+        slideUp: "slideUp 300ms cubic-bezier(0.87, 0, 0.13, 1)",
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
