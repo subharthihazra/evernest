@@ -137,7 +137,7 @@ function Searchbar({ searchbarRef, searchbarOpen }) {
           className="h-full w-full outline-none text-lg bg-transparent"
           type="text"
           id="search"
-          placeholder="Search Something ..."
+          placeholder="Explore Evernest ..."
         />
       </div>
     </div>
