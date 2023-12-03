@@ -1,76 +1,34 @@
 import * as NavigationMenu from "@radix-ui/react-navigation-menu";
+import menuData from "../data/menu";
 
 function Navmenu() {
   return (
-    <NavigationMenu.Root className="hidden sm:block">
+    <NavigationMenu.Root>
       <NavigationMenu.List className="flex place-content-center">
-        <NavigationMenu.Item>
-          <NavigationMenu.Trigger className="hover:text-yellow-900 px-6 transition-colors">
-            MEN
-          </NavigationMenu.Trigger>
-          <ContentPane>
-            <ListItem>Printed Tshirts</ListItem>
-            <ListItem>Oversized Tshirts</ListItem>
-            <ListItem>Full Sleeve Tshirts</ListItem>
-            <ListItem>Half Sleeve Tshirts</ListItem>
-            <ListItem>Polo Tshirts</ListItem>
-            <ListItem>Sweatshirts</ListItem>
-            <ListItem>Shirts</ListItem>
-            <ListItem>Joggers</ListItem>
-          </ContentPane>
-        </NavigationMenu.Item>
+        {menuData.map((option) => (
+          <NavigationMenu.Item key={option?.trigger}>
+            <MenuTrigger>{option?.trigger}</MenuTrigger>
+            <ContentPane>
+              {option?.content?.map((subOption) => (
+                <ListItem key={subOption}>{subOption}</ListItem>
+              ))}
+            </ContentPane>
+          </NavigationMenu.Item>
+        ))}
 
-        <NavigationMenu.Item>
-          <NavigationMenu.Trigger className="hover:text-yellow-900 px-6 transition-colors">
-            WOMEN
-          </NavigationMenu.Trigger>
-
-          <ContentPane>
-            <ListItem>Printed Tshirts</ListItem>
-            <ListItem>Oversized Tshirts</ListItem>
-            <ListItem>Full Sleeve Tshirts</ListItem>
-            <ListItem>Half Sleeve Tshirts</ListItem>
-            <ListItem>Polo Tshirts</ListItem>
-            <ListItem>Sweatshirts</ListItem>
-            <ListItem>Shirts</ListItem>
-            <ListItem>Joggers</ListItem>
-          </ContentPane>
-        </NavigationMenu.Item>
-
-        <NavigationMenu.Item>
-          <NavigationMenu.Trigger className="hover:text-yellow-900 px-6 transition-colors">
-            KIDS
-          </NavigationMenu.Trigger>
-          <ContentPane>
-            <ListItem>Printed Tshirts</ListItem>
-            <ListItem>Full Sleeve Tshirts</ListItem>
-            <ListItem>Half Sleeve Tshirts</ListItem>
-            <ListItem>Shirts</ListItem>
-            <ListItem>Joggers</ListItem>
-            <ListItem>Trousers</ListItem>
-            <ListItem>Toys</ListItem>
-          </ContentPane>
-        </NavigationMenu.Item>
-
-        <NavigationMenu.Item>
-          <NavigationMenu.Link className="hover:text-blue-500 px-6 transition-colors">
-            MORE
-          </NavigationMenu.Link>
-        </NavigationMenu.Item>
-
-        <NavigationMenu.Indicator className="absolute z-[-1] transition-all data-[state=visible]:animate-fadeIn data-[state=hidden]:animate-fadeOut">
-          <div className="bg-black h-0.5 w-[calc(100%-1.5rem*2)] m-auto transition-all"></div>
+        <NavigationMenu.Indicator className="absolute z-[2] transition-all data-[state=visible]:animate-fadeIn data-[state=hidden]:animate-fadeOut">
+          <div className="bg-black dark:bg-white h-0.5 w-[calc(100%-1.5rem*2)] m-auto transition-all"></div>
         </NavigationMenu.Indicator>
       </NavigationMenu.List>
 
-      <NavigationMenu.Viewport className="w-full z-[-2] absolute left-0 h-14 data-[state=open]:animate-getIn data-[state=closed]:animate-getOut " />
+      <NavigationMenu.Viewport className="relative w-full z-[1] left-0 overflow-hidden h-[var(--radix-navigation-menu-viewport-height)] data-[state=open]:animate-getIn data-[state=closed]:animate-getOut" />
     </NavigationMenu.Root>
   );
 }
 
 function ContentPane({ children }) {
   return (
-    <NavigationMenu.Content className="absolute p-5 w-full bg-white dark:bg-gray-700 rounded-b-2xl shadow-lg data-[motion=from-start]:animate-enterFromLeft data-[motion=from-end]:animate-enterFromRight data-[motion=to-start]:animate-exitToLeft data-[motion=to-end]:animate-exitToRight">
+    <NavigationMenu.Content className="absolute p-5 w-full data-[motion=from-start]:animate-enterFromLeft data-[motion=from-end]:animate-enterFromRight data-[motion=to-start]:animate-exitToLeft data-[motion=to-end]:animate-exitToRight">
       <ul className="grid sm:grid-cols-2 md:grid-cols-3 gap-2 w-full">
         {children}
       </ul>
@@ -87,6 +45,14 @@ function ListItem({ className, children, ...props }) {
         </a>
       </NavigationMenu.Link>
     </li>
+  );
+}
+
+function MenuTrigger({ children }) {
+  return (
+    <NavigationMenu.Trigger className="px-6 transition-colors hover:text-emerald-700 dark:hover:text-white">
+      {children}
+    </NavigationMenu.Trigger>
   );
 }
 
