@@ -296,7 +296,9 @@ function Menu({ menuOpen, onMenuClose }) {
                   <div className="flex flex-col p-3 gap-2 group-data-[state=open]:opacity-1 group-data-[state=closed]:opacity-0 transition-opacity duration-300">
                     {option?.content?.map((subOption) => (
                       <a key={subOption}>
-                        <div className="p-2 text-[16px]">{subOption}</div>
+                        <div className="p-2 text-[16px] cursor-pointer">
+                          {subOption}
+                        </div>
                       </a>
                     ))}
                   </div>
