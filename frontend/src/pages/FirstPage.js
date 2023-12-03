@@ -14,7 +14,7 @@ function HeroSection() {
   return (
     <div className="hero-section grid grid-cols-1 grid-rows-2 h-[calc(100vh-128px)]">
       <div className="col-start-1 col-end-2 row-start-2 md:row-start-1 row-end-3 h-full flex">
-        <div className="h-[60%] md:h-[40%] w-full place-self-center bg-gradient-to-r from-[rgba(15,96,77,0.39)] to-transparent"></div>
+        <div className="h-[60%] md:h-[40%] w-full place-self-center bg-gradient-to-r from-[rgba(85,210,66,0.39)] dark:from-[rgba(15,96,77,0.39)] to-transparent"></div>
       </div>
 
       <div className="col-start-1 col-end-2 row-start-1 row-end-3 grid grid-cols-1 grid-rows-2 px-3 mx-auto lg:w-2/3 sm:px-8 md:px-6 lg:px-2">
@@ -45,46 +45,54 @@ function HeroSection() {
 
 function ProductShowcase() {
   return (
-    <div className="product-showcase mx-auto lg:w-2/3 px-3 sm:px-8 md:px-6 lg:px-2">
-      <div className="grid grid-cols-8 md:grid-cols-12 grid-rows-[repeat(23,minmax(0,1fr))] md:grid-rows-[repeat(16,minmax(0,1fr))] w-full gap-3 sm:gap-5 md:aspect-[1/1.5] aspect-[1/3]">
-        <ProductShowcaseItem
-          className="md:col-start-9 md:col-end-13 md:row-start-2 md:row-end-6 col-start-1 col-end-5 row-start-2 row-end-7"
-          src="./assets/images/dispimg_5.jpeg"
-        />
-        <ProductShowcaseItem
-          className="md:col-start-5 md:col-end-9 md:row-start-1 md:row-end-5 col-start-5 col-end-9 row-start-1 row-end-5"
-          src="./assets/images/dispimg_6.jpeg"
-        />
-        <ProductShowcaseItem
-          className="md:col-start-1 md:col-end-5 md:row-start-2 md:row-end-[10] col-start-5 col-end-9 row-start-5 row-end-[12]"
-          src="./assets/images/dispimg_4.jpeg"
-        />
-        <ProductShowcaseItem
-          className="md:col-start-5 md:col-end-9 md:row-start-5 md:row-end-[9] col-start-1 col-end-5 row-start-7 row-end-[12]"
-          src="./assets/images/dispimg_10.jpeg"
-        />
-        <ProductShowcaseItem
-          className="md:col-start-9 md:col-end-12 md:row-start-6 md:row-end-[9] col-start-2 col-end-5 row-start-[16] row-end-[19]"
-          src="./assets/images/dispimg_2.jpeg"
-        />
-        <ProductShowcaseItem
-          className="md:col-start-5 md:col-end-13 md:row-start-[9] md:row-end-[13] col-start-1 col-end-9 row-start-[12] row-end-[16]"
-          src="./assets/images/dispimg_1.jpeg"
-        />
-        <ProductShowcaseItem
-          className="md:col-start-2 md:col-end-5 md:row-start-[10] md:row-end-[13] col-start-5 col-end-8 row-start-[20] row-end-[23]"
-          src="./assets/images/dispimg_3.jpeg"
-        />
-        <ProductShowcaseItem
-          className="md:col-start-3 md:col-end-7 md:row-start-[13] md:row-end-[17] col-start-1 col-end-5 row-start-[19] row-end-[23]"
-          src="./assets/images/dispimg_8.jpeg"
-        />
-        <ProductShowcaseItem
-          className="md:col-start-7 md:col-end-11 md:row-start-[13] md:row-end-[17]  col-start-5 col-end-9 row-start-[16] row-end-[20]"
-          src="./assets/images/dispimg_7.jpeg"
-        />
+    <>
+      <div className="mt-10 mb-32 mx-auto lg:w-2/3 px-3 sm:px-8 md:px-6 lg:px-2 text-center">
+        <p className="text-[30px] sm:text-[40px] font-pacifico">Evernest</p>
+        <p className="text-[20px] sm:text-[30px] font-novasquare">
+          Define your style.
+        </p>
       </div>
-    </div>
+      <div className="product-showcase mx-auto lg:w-2/3 px-3 sm:px-8 md:px-6 lg:px-2">
+        <div className="grid grid-cols-8 md:grid-cols-12 grid-rows-[repeat(23,minmax(0,1fr))] md:grid-rows-[repeat(16,minmax(0,1fr))] w-full gap-3 sm:gap-5 md:aspect-[1/1.5] aspect-[1/3]">
+          <ProductShowcaseItem
+            className="md:col-start-9 md:col-end-13 md:row-start-2 md:row-end-6 col-start-1 col-end-5 row-start-2 row-end-7"
+            src="./assets/images/dispimg_5.jpeg"
+          />
+          <ProductShowcaseItem
+            className="md:col-start-5 md:col-end-9 md:row-start-1 md:row-end-5 col-start-5 col-end-9 row-start-1 row-end-5"
+            src="./assets/images/dispimg_6.jpeg"
+          />
+          <ProductShowcaseItem
+            className="md:col-start-1 md:col-end-5 md:row-start-2 md:row-end-[10] col-start-5 col-end-9 row-start-5 row-end-[12]"
+            src="./assets/images/dispimg_4.jpeg"
+          />
+          <ProductShowcaseItem
+            className="md:col-start-5 md:col-end-9 md:row-start-5 md:row-end-[9] col-start-1 col-end-5 row-start-7 row-end-[12]"
+            src="./assets/images/dispimg_10.jpeg"
+          />
+          <ProductShowcaseItem
+            className="md:col-start-9 md:col-end-12 md:row-start-6 md:row-end-[9] col-start-2 col-end-5 row-start-[16] row-end-[19]"
+            src="./assets/images/dispimg_2.jpeg"
+          />
+          <ProductShowcaseItem
+            className="md:col-start-5 md:col-end-13 md:row-start-[9] md:row-end-[13] col-start-1 col-end-9 row-start-[12] row-end-[16]"
+            src="./assets/images/dispimg_1.jpeg"
+          />
+          <ProductShowcaseItem
+            className="md:col-start-2 md:col-end-5 md:row-start-[10] md:row-end-[13] col-start-5 col-end-8 row-start-[20] row-end-[23]"
+            src="./assets/images/dispimg_3.jpeg"
+          />
+          <ProductShowcaseItem
+            className="md:col-start-3 md:col-end-7 md:row-start-[13] md:row-end-[17] col-start-1 col-end-5 row-start-[19] row-end-[23]"
+            src="./assets/images/dispimg_8.jpeg"
+          />
+          <ProductShowcaseItem
+            className="md:col-start-7 md:col-end-11 md:row-start-[13] md:row-end-[17]  col-start-5 col-end-9 row-start-[16] row-end-[20]"
+            src="./assets/images/dispimg_7.jpeg"
+          />
+        </div>
+      </div>
+    </>
   );
 }
 
