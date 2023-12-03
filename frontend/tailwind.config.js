@@ -72,6 +72,7 @@ module.exports = {
       },
       fontFamily: {
         poppins: ["Poppins", "sans-serif"],
+        novasquare: ["Nova Square", "sans-serif"],
       },
     },
   },
