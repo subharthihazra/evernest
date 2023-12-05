@@ -21,7 +21,7 @@ function Navmenu() {
         </NavigationMenu.Indicator>
       </NavigationMenu.List>
 
-      <NavigationMenu.Viewport className="relative w-full z-[1] left-0 overflow-hidden h-[var(--radix-navigation-menu-viewport-height)] data-[state=open]:animate-getIn data-[state=closed]:animate-getOut" />
+      <NavigationMenu.Viewport className="relative w-full z-[1] left-0 overflow-hidden transition-all h-[var(--radix-navigation-menu-viewport-height)] data-[state=open]:animate-getIn data-[state=closed]:animate-getOut" />
     </NavigationMenu.Root>
   );
 }
