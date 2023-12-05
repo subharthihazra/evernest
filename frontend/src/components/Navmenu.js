@@ -39,10 +39,8 @@ function ContentPane({ children }) {
 function ListItem({ className, children, ...props }) {
   return (
     <li className="p-2 text-center">
-      <NavigationMenu.Link>
-        <a {...props}>
-          <div className={` ${className}`}>{children}</div>
-        </a>
+      <NavigationMenu.Link {...props}>
+        <div className={` ${className}`}>{children}</div>
       </NavigationMenu.Link>
     </li>
   );
