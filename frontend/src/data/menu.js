@@ -32,7 +32,6 @@ export default [
       "Full Sleeve Tshirts",
       "Half Sleeve Tshirts",
       "Shirts",
-      "Joggers",
       "Trousers",
       "Toys",
     ],

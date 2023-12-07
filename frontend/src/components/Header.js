@@ -2,7 +2,6 @@ import React, { useRef, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import {
   AiOutlineMenu,
-  AiOutlineShoppingCart,
   AiOutlineUser,
   AiOutlineSearch,
   AiOutlineCloseCircle,
@@ -13,6 +12,8 @@ import { IoChevronDownSharp } from "react-icons/io5";
 import { toggleColorMode } from "../colorMode";
 import Navmenu from "./Navmenu";
 import menuData from "../data/menu";
+import HeaderLogo from "./HeaderLogo";
+import CartButton from "./Cart";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState("closed");
@@ -137,7 +138,7 @@ function Searchbar({ searchbarRef, searchbarOpen }) {
           className="h-full w-full outline-none text-lg bg-transparent"
           type="text"
           id="search"
-          placeholder="Search Something ..."
+          placeholder="Explore Evernest ..."
         />
       </div>
     </div>
@@ -188,57 +189,11 @@ function ThemeButton() {
   );
 }
 
-function CartButton() {
-  return (
-    <HeaderLogo>
-      <AiOutlineShoppingCart />
-    </HeaderLogo>
-  );
-}
-
 function UserButton() {
   return (
     <HeaderLogo>
       <AiOutlineUser />
     </HeaderLogo>
-  );
-}
-
-function HeaderLogo({
-  children,
-  href = null,
-  target = null,
-  linkProps = "",
-  className: boxPropsClassName = "",
-  ...otherBoxProps
-}) {
-  const { className: linkPropsClassName = "", ...otherLinkProps } = linkProps;
-
-  let childrenWithProps;
-  if (!Array.isArray(children)) {
-    const { className: logoPropsClassName = "", ...otherLogoProps } =
-      children?.props;
-
-    childrenWithProps = React.cloneElement(children, {
-      className: `text-black dark:text-white h-8 w-8 ${logoPropsClassName}`,
-      ...otherLogoProps,
-    });
-  }
-
-  return (
-    <a
-      href={href}
-      className={`${linkPropsClassName}`}
-      target={target}
-      {...otherLinkProps}
-    >
-      <div
-        className={`h-10 w-10 overflow-hidden flex justify-center items-center ${boxPropsClassName}`}
-        {...otherBoxProps}
-      >
-        {Array.isArray(children) ? children : childrenWithProps}
-      </div>
-    </a>
   );
 }
 
