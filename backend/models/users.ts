@@ -1,6 +1,10 @@
 import { model, Schema, Document } from "mongoose";
-import { hash } from "bcrypt";
-import * as EmailValidator from "email-validator";
+import hashPassword from "../encrypt/hash";
+import {
+  validateEmail,
+  validatePassword,
+  validateName,
+} from "../validations/auth";
 
 interface User extends Document {
   _id: string;
@@ -14,23 +18,29 @@ interface User extends Document {
 const userSchema: Schema<User> = new Schema({
   email: {
     type: String,
-    required: true,
+    required: [true, "Email is required"],
     unique: true,
     lowercase: true,
     validate: {
-      validator: (val: string) => {
-        return EmailValidator.validate(val);
-      },
-      message: (props) => `${props.value} is not a valid email`,
+      validator: validateEmail,
+      message: () => "Not a valid email",
     },
   },
   password: {
     type: String,
     required: true,
+    validate: {
+      validator: validatePassword,
+      message: () => "Password not matching the criteria",
+    },
   },
   name: {
     type: String,
     required: true,
+    validate: {
+      validator: validateName,
+      message: () => "Name not matching the criteria",
+    },
   },
   isEmailVerified: {
     type: Boolean,
@@ -44,11 +54,11 @@ const userSchema: Schema<User> = new Schema({
 
 userSchema.pre("save", async function (next) {
   try {
-    this.password = await hash(this.password, 10);
-
+    this.name = this.name.trim();
+    this.password = await hashPassword(this.password);
     next();
-  } catch (err) {
-    console.log(err);
+  } catch (err: any) {
+    throw err;
   }
 });
 
