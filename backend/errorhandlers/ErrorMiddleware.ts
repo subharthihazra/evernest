@@ -7,12 +7,12 @@ export default function ErrorMiddleware(
   next: NextFunction
 ) {
   console.log("Middleware Error Hadnling");
-  const errStatus = err.status || 500;
+  const statusCode = err.statusCode || 500;
   const errMsg = err.message || "Something went wrong";
 
-  res.status(errStatus).json({
+  res.status(statusCode).json({
     success: false,
-    status: errStatus,
+    status: statusCode,
     message: errMsg,
   });
 }
