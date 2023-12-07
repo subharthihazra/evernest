@@ -8,7 +8,8 @@ interface Product extends Document {
 
 interface Variant {
   size: "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
-  price: number;
+  originalPrice: number;
+  currentPrice: number;
   stock: number;
 }
 
@@ -27,7 +28,11 @@ const productSchema: Schema<Product> = new Schema({
         enum: ["XS", "S", "M", "L", "XL", "XXL", "XXXL"],
         required: true,
       },
-      price: {
+      originalPrice: {
+        type: Number,
+        required: true,
+      },
+      currentPrice: {
         type: Number,
         required: true,
       },

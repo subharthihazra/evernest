@@ -1,5 +1,6 @@
 import { model, Schema, Document } from "mongoose";
 import { hash } from "bcrypt";
+import * as EmailValidator from "email-validator";
 
 interface User extends Document {
   _id: string;
@@ -16,6 +17,12 @@ const userSchema: Schema<User> = new Schema({
     required: true,
     unique: true,
     lowercase: true,
+    validate: {
+      validator: (val: string) => {
+        return EmailValidator.validate(val);
+      },
+      message: (props) => `${props.value} is not a valid email`,
+    },
   },
   password: {
     type: String,
