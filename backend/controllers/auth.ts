@@ -20,8 +20,19 @@ export function signup(req: Request, res: Response, next: NextFunction) {
       next(new CustomError(400, "Not enough data provided"));
     }
     console.log(email, password);
-    userModel.create({ email, password, name });
-    res.status(201).json({ success: true, email, name });
+    userModel
+      .create({ email, password, name })
+      .then(() => {
+        res.status(201).json({ success: true, email, name });
+      })
+      .catch((err: any) => {
+        console.log("ERROR: ", err.code, err.name);
+        if (err.name === "MongoServerError" && err.code === 11000) {
+          next(new CustomError(400, "Email is already used"));
+        } else {
+          next(new CustomError(400, err.message));
+        }
+      });
   } catch (err) {
     next(err);
   }
