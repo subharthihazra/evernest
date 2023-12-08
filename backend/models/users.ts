@@ -66,7 +66,10 @@ userSchema.statics.validateUserCredentials = async function (
   if (!(validateEmail(email) && validatePassword(password))) {
     return false;
   }
-  const foundUser: any = await this.findOne({ email });
+  const foundUser: any = await this.findOne(
+    { email },
+    { email: 1, password: 1, name: 1 }
+  );
   // console.log("pp", foundUser);
   if (!foundUser) {
     return false;
