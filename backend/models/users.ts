@@ -8,7 +8,7 @@ import {
 import User from "../types/user";
 
 interface UserModel extends Model<User> {
-  validateUserCredentials(email: string, password: string): Promise<boolean>;
+  validateUserCredentials(email: string, password: string): Promise<User>;
 }
 
 const userSchema: Schema<User, UserModel> = new Schema({
@@ -64,7 +64,7 @@ userSchema.statics.validateUserCredentials = async function (
   password: string
 ) {
   if (!(validateEmail(email) && validatePassword(password))) {
-    return false;
+    return null;
   }
   const foundUser: any = await this.findOne(
     { email },
@@ -72,9 +72,12 @@ userSchema.statics.validateUserCredentials = async function (
   );
   // console.log("pp", foundUser);
   if (!foundUser) {
-    return false;
+    return null;
   }
-  return await comparePasswords(password, foundUser.password);
+  if (!(await comparePasswords(password, foundUser.password))) {
+    return null;
+  }
+  return { email: foundUser.email, _id: foundUser._id, name: foundUser.name };
 };
 
 const userModel = model<User, UserModel>("User", userSchema);
