@@ -4,20 +4,7 @@ import userModel from "../models/users";
 import { CustomError } from "../errorhandlers/CustomError";
 import User from "../types/user";
 import { JWT_SECRET_KEY } from "../config/env";
-
-export interface DataStoredInToken {
-  _id: string;
-  email: string;
-}
-
-export interface TokenData {
-  token: string;
-  expiresIn: number;
-}
-
-export interface RequestWithUser extends Request {
-  user: User;
-}
+import { DataStoredInToken, TokenData } from "../types/token";
 
 export async function signin(req: Request, res: Response, next: NextFunction) {
   try {
