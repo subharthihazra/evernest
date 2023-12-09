@@ -14,9 +14,7 @@ export default async function verifyUserMidddleware(
   try {
     const Authorization =
       req.cookies["Authorization"] ||
-      (req.header("Authorization")
-        ? req.header("Authorization").split("Bearer ")[1]
-        : null);
+      req.header("Authorization")?.split("Bearer ")[1];
 
     if (!Authorization) {
       return next(new CustomError(404, "Authentication token missing"));
