@@ -82,3 +82,36 @@ function createToken(user: User): TokenData {
 function createCookie(tokenData: TokenData): string {
   return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
 }
+
+export async function logout(req: Request, res: Response, next: NextFunction) {
+  try {
+    const userData: User = req.user;
+    if (!userData) {
+      return next(new CustomError(400, "userData is empty"));
+    }
+    if (!(userData._id && userData.email)) {
+      return next(new CustomError(400, "userData is empty"));
+    }
+
+    const foundUser = await userModel.findOne(
+      {
+        _id: userData._id,
+        email: userData.email,
+      },
+      {
+        _id: 1,
+        email: 1,
+      }
+    );
+    if (!foundUser) {
+      throw new CustomError(409, `This email ${userData.email} was not found`);
+    }
+
+    res.setHeader("Set-Cookie", ["Authorization=; Max-age=0"]);
+    res
+      .status(200)
+      .json({ success: true, data: foundUser, message: "loggedout" });
+  } catch (error) {
+    next(error);
+  }
+}

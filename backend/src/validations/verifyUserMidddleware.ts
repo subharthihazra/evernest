@@ -2,12 +2,12 @@ import { NextFunction, Request, Response } from "express";
 import { verify } from "jsonwebtoken";
 import User from "../types/user";
 import { JWT_SECRET_KEY } from "../config/env";
-import { DataStoredInToken, RequestWithUser } from "../types/token";
+import { DataStoredInToken } from "../types/token";
 import userModel from "../models/users";
 import { CustomError } from "../errorhandlers/CustomError";
 
 export default async function verifyUserMidddleware(
-  req: RequestWithUser,
+  req: Request,
   res: Response,
   next: NextFunction
 ) {
@@ -24,8 +24,22 @@ export default async function verifyUserMidddleware(
       Authorization,
       secretKey
     )) as DataStoredInToken;
-    const userId = verificationResponse._id;
-    const foundUser = await userModel.findById(userId);
+    if (
+      !(verificationResponse._id?.trim() && verificationResponse.email?.trim())
+    ) {
+      return next(new CustomError(401, "Wrong authentication token"));
+    }
+    const foundUser = await userModel.findOne(
+      {
+        _id: verificationResponse._id,
+        email: verificationResponse.email,
+      },
+      {
+        _id: 1,
+        email: 1,
+        name: 1,
+      }
+    );
 
     if (!foundUser) {
       return next(new CustomError(401, "Wrong authentication token"));
