@@ -2,4 +2,4 @@ import express, { Express } from "express";
 
 const router = express.Router();
 
-// router.get("/", getAllProducts);
+router.get("/", getAllProducts);
