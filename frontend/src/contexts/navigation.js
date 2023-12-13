@@ -2,7 +2,7 @@ import { createContext } from "react";
 import { useNavigate } from "react-router";
 const NavigationContext = createContext(undefined);
 
-function GlobalProvider({ children }) {
+function NavigationProvider({ children }) {
   const navigate = useNavigate();
 
   function navigatePage(url) {
@@ -16,4 +16,4 @@ function GlobalProvider({ children }) {
   );
 }
 
-export { GlobalProvider, NavigationContext };
+export { NavigationProvider, NavigationContext };

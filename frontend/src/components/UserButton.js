@@ -1,12 +1,15 @@
-import { useSelector, useDispatch } from "react-redux";
 import { AiOutlineUser } from "react-icons/ai";
 import HeaderLogo from "./HeaderLogo";
+import { NavigationContext } from "../contexts/navigation";
+import { useContext } from "react";
 
 function UserButton() {
-  const state = useSelector((state) => state.cart);
-
+  const navigate = useContext(NavigationContext);
+  function navigateUser(url) {
+    navigate("/signin");
+  }
   return (
-    <HeaderLogo onClick={state.navigate("/signin")}>
+    <HeaderLogo onClick={navigateUser}>
       <AiOutlineUser />
     </HeaderLogo>
   );

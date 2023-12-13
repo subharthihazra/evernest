@@ -14,13 +14,11 @@ import menuData from "../data/menu";
 import HeaderLogo from "./HeaderLogo";
 import CartButton from "./CartButton";
 import UserButton from "./UserButton";
-import { NavigationContext } from "../contexts/global";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState("closed");
   const [searchbarOpen, setSearchbarOpen] = useState(false);
   const searchbarRef = useRef(null);
-  const navigate = useContext(NavigationContext);
 
   function handleMenuOpen() {
     setMenuOpen("open");
@@ -47,10 +45,6 @@ function Header() {
     setSearchbarOpen(false);
 
     searchbarRef.current.value = "";
-  }
-
-  function navigateUser() {
-    navigate("/signin");
   }
 
   return (
