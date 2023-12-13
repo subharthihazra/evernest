@@ -1,8 +1,7 @@
-import React, { useRef, useState } from "react";
+import React, { useContext, useRef, useState } from "react";
 import * as Accordion from "@radix-ui/react-accordion";
 import {
   AiOutlineMenu,
-  AiOutlineUser,
   AiOutlineSearch,
   AiOutlineCloseCircle,
   AiOutlineClose,
@@ -13,12 +12,15 @@ import { toggleColorMode } from "../colorMode";
 import Navmenu from "./Navmenu";
 import menuData from "../data/menu";
 import HeaderLogo from "./HeaderLogo";
-import CartButton from "./Cart";
+import CartButton from "./CartButton";
+import UserButton from "./UserButton";
+import { NavigationContext } from "../contexts/global";
 
 function Header() {
   const [menuOpen, setMenuOpen] = useState("closed");
   const [searchbarOpen, setSearchbarOpen] = useState(false);
   const searchbarRef = useRef(null);
+  const navigate = useContext(NavigationContext);
 
   function handleMenuOpen() {
     setMenuOpen("open");
@@ -45,6 +47,10 @@ function Header() {
     setSearchbarOpen(false);
 
     searchbarRef.current.value = "";
+  }
+
+  function navigateUser() {
+    navigate("/signin");
   }
 
   return (
@@ -185,14 +191,6 @@ function ThemeButton() {
     <HeaderLogo className="cursor-pointer" onClick={toggleColorMode}>
       <FiSun className="h-8 w-8 hidden dark:block" />
       <FiMoon className="h-8 w-8 dark:hidden" />
-    </HeaderLogo>
-  );
-}
-
-function UserButton() {
-  return (
-    <HeaderLogo>
-      <AiOutlineUser />
     </HeaderLogo>
   );
 }
