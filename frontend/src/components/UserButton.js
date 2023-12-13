@@ -1,15 +1,16 @@
 import { AiOutlineUser } from "react-icons/ai";
 import HeaderLogo from "./HeaderLogo";
-import { NavigationContext } from "../contexts/navigation";
-import { useContext } from "react";
+import { useNavigate } from "react-router";
 
 function UserButton() {
-  const navigate = useContext(NavigationContext);
-  function navigateUser(url) {
+  const navigate = useNavigate();
+
+  function navigateSignin(url) {
     navigate("/signin");
   }
+
   return (
-    <HeaderLogo onClick={navigateUser}>
+    <HeaderLogo onClick={navigateSignin}>
       <AiOutlineUser />
     </HeaderLogo>
   );
