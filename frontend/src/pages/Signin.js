@@ -58,7 +58,7 @@ function Signin() {
       >
         <div className="text-center text-2xl">Signin</div>
         <div className="text-center">{errorMsg}</div>
-        <Form.Field className="grid mb-[10px]" name="email">
+        <Form.Field className="grid mb-[10px] gap-1" name="email">
           <div className="flex items-baseline justify-between">
             <Form.Label className="font-medium leading-[35px]">
               Email
@@ -78,13 +78,13 @@ function Signin() {
           </div>
           <Form.Control asChild>
             <input
-              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-base leading-none shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black]"
+              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-base leading-none shadow-[0_0_0_1px_rgba(0,0,0,0.5)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.5)] outline-none hover:shadow-[0_0_0_1px_black]  focus:shadow-[0_0_0_2px_black] dark:hover:shadow-[0_0_0_1px_white]  dark:focus:shadow-[0_0_0_2px_white] bg-white dark:bg-black transition-all"
               type="email"
               required
             />
           </Form.Control>
         </Form.Field>
-        <Form.Field className="grid mb-[10px]" name="password">
+        <Form.Field className="grid mb-[10px] gap-1" name="password">
           <div className="flex items-baseline justify-between">
             <Form.Label className="font-medium leading-[35px]">
               Password
@@ -104,7 +104,7 @@ function Signin() {
           </div>
           <Form.Control asChild>
             <input
-              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-base leading-none shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black]"
+              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-base leading-none shadow-[0_0_0_1px_rgba(0,0,0,0.5)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.5)] outline-none hover:shadow-[0_0_0_1px_black]  focus:shadow-[0_0_0_2px_black] dark:hover:shadow-[0_0_0_1px_white]  dark:focus:shadow-[0_0_0_2px_white] bg-white dark:bg-black transition-all"
               type="password"
               required
             />
@@ -112,13 +112,17 @@ function Signin() {
         </Form.Field>
         <div className="bg-aqua flex justify-between items-end">
           <div className="flex flex-col gap-2">
-            <div onClick={navigateSignup}>Sign up</div>
-            <div onClick={navigateForgotPassword}>Forgot password</div>
+            <div onClick={navigateSignup} className="cursor-pointer">
+              Sign up
+            </div>
+            <div onClick={navigateForgotPassword} className="cursor-pointer">
+              Forgot password
+            </div>
           </div>
           <Form.Submit asChild>
             <input
               type="submit"
-              className="box-border inline-flex h-[35px] items-center justify-center rounded-[4px] bg-[rgb(15,96,77)] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none mt-[10px] shadow-[0_0_15px_3px_rgba(0,0,0,0.1),0_0_3px_1px_rgba(0,0,0,0.05)] text-white"
+              className="box-border inline-flex items-center justify-center rounded-[4px] bg-[rgb(15,96,77)] px-[18px] py-[12px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none mt-[10px] shadow-[0_0_15px_3px_rgba(0,0,0,0.1),0_0_3px_1px_rgba(0,0,0,0.05)] text-white cursor-pointer"
               value={mutation.isLoading ? "Loading" : "Signin"}
             />
           </Form.Submit>
