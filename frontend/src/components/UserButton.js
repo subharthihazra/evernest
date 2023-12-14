@@ -10,7 +10,7 @@ function UserButton() {
   }
 
   return (
-    <HeaderLogo onClick={navigateSignin}>
+    <HeaderLogo className="cursor-pointer" onClick={navigateSignin}>
       <AiOutlineUser />
     </HeaderLogo>
   );

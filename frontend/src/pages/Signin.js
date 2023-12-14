@@ -28,17 +28,23 @@ function Signin() {
     onSuccess: (data, variables, context) => {
       if (data?.data?.success === true) {
         console.log("hoho");
+        navigateToPreviousPage();
       } else {
         setErrorMsg("Error Occurred");
       }
     },
   });
 
-  function navigateSignup(url) {
+  function navigateToPreviousPage() {
+    // later change it ***
+    navigate("/");
+  }
+
+  function navigateSignup() {
     navigate("/signup");
   }
 
-  function navigateForgotPassword(url) {
+  function navigateForgotPassword() {
     navigate("/forgotpassword");
   }
 
