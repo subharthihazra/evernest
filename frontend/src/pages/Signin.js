@@ -1,14 +1,38 @@
-import React from "react";
+import React, { useState } from "react";
 import * as Form from "@radix-ui/react-form";
 import { useNavigate } from "react-router";
 import axios from "axios";
-import { useQuery } from "@tanstack/react-query";
+import { useMutation } from "@tanstack/react-query";
 
-async function getUser() {}
+async function getUser({ email, password }) {
+  return await axios.post("http://localhost:5000/auth/signin", {
+    email,
+    password,
+  });
+}
 
 function Signin() {
   const navigate = useNavigate();
-  const { data: user, error, isLoading } = useQuery("postsData", retrievePosts);
+  const [errorMsg, setErrorMsg] = useState(null);
+  const mutation = useMutation({
+    mutationFn: getUser,
+    onError: (error, variables, context) => {
+      if (error.response?.status === 401) {
+        console.log(error.response?.data?.message);
+        setErrorMsg("Invalid Email or Password");
+      } else {
+        console.log("Error: ", error.message);
+        setErrorMsg("Error Occurred");
+      }
+    },
+    onSuccess: (data, variables, context) => {
+      if (data?.data?.success === true) {
+        console.log("hoho");
+      } else {
+        setErrorMsg("Error Occurred");
+      }
+    },
+  });
 
   function navigateSignup(url) {
     navigate("/signup");
@@ -20,31 +44,23 @@ function Signin() {
 
   async function handleSubmit(e) {
     e.preventDefault();
-    try {
-      const { data } = await axios.post("http://localhost:5000/auth/signin", {
-        email: e.target.email.value?.trim(),
-        password: e.target.password.value,
-      });
-      if (data?.success === true) {
-        console.log("Logged innnn");
-      } else {
-        console.log("Nottt innnn");
-      }
-    } catch (e) {
-      if (e.response?.status === 401) {
-        console.log(e.response?.data?.message);
-      } else {
-        console.log("Error: ", e.message);
-      }
-    }
+    mutation.mutate({
+      email: e.target.email.value?.trim(),
+      password: e.target.password.value,
+    });
   }
 
   return (
-    <div>
-      <Form.Root className="w-[260px] m-auto" onSubmit={handleSubmit}>
+    <div className="absolute top-1/2 sm:left-1/2 sm:translate-x-[-50%] translate-y-[-50%] text-base w-full">
+      <Form.Root
+        className="w-auto sm:w-[350px] mx-3 sm:mx-auto p-6 rounded-xl flex flex-col gap-2 bg-[rgba(255,255,255,0.8)] dark:bg-[rgba(15,96,77,0.39)] shadow-[0_0_15px_3px_rgba(0,0,0,0.1),0_0_3px_1px_rgba(0,0,0,0.05)]"
+        onSubmit={handleSubmit}
+      >
+        <div className="text-center text-2xl">Signin</div>
+        <div className="text-center">{errorMsg}</div>
         <Form.Field className="grid mb-[10px]" name="email">
           <div className="flex items-baseline justify-between">
-            <Form.Label className="text-[15px] font-medium leading-[35px]">
+            <Form.Label className="font-medium leading-[35px]">
               Email
             </Form.Label>
             <Form.Message
@@ -62,7 +78,7 @@ function Signin() {
           </div>
           <Form.Control asChild>
             <input
-              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black]"
+              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-base leading-none shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black]"
               type="email"
               required
             />
@@ -70,7 +86,7 @@ function Signin() {
         </Form.Field>
         <Form.Field className="grid mb-[10px]" name="password">
           <div className="flex items-baseline justify-between">
-            <Form.Label className="text-[15px] font-medium leading-[35px]">
+            <Form.Label className="font-medium leading-[35px]">
               Password
             </Form.Label>
             <Form.Message
@@ -88,22 +104,22 @@ function Signin() {
           </div>
           <Form.Control asChild>
             <input
-              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-[15px] leading-none shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black]"
+              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-base leading-none shadow-[0_0_0_1px] outline-none hover:shadow-[0_0_0_1px_black] focus:shadow-[0_0_0_2px_black]"
               type="password"
               required
             />
           </Form.Control>
         </Form.Field>
-        <div className="bg-aqua flex justify-between">
-          <div>
+        <div className="bg-aqua flex justify-between items-end">
+          <div className="flex flex-col gap-2">
             <div onClick={navigateSignup}>Sign up</div>
             <div onClick={navigateForgotPassword}>Forgot password</div>
           </div>
           <Form.Submit asChild>
             <input
               type="submit"
-              className="box-border text-violet11 shadow-blackA4 hover:bg-mauve3 inline-flex h-[35px] items-center justify-center rounded-[4px] bg-white px-[15px] font-medium leading-none shadow-[0_2px_10px] focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none mt-[10px]"
-              value="Signin"
+              className="box-border inline-flex h-[35px] items-center justify-center rounded-[4px] bg-[rgb(15,96,77)] px-[15px] font-medium leading-none focus:shadow-[0_0_0_2px] focus:shadow-black focus:outline-none mt-[10px] shadow-[0_0_15px_3px_rgba(0,0,0,0.1),0_0_3px_1px_rgba(0,0,0,0.05)] text-white"
+              value={mutation.isLoading ? "Loading" : "Signin"}
             />
           </Form.Submit>
         </div>

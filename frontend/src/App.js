@@ -6,7 +6,7 @@ import Signin from "./pages/Signin";
 
 function App() {
   return (
-    <div>
+    <div className="min-h-[100vh]">
       <BrowserRouter>
         <Header />
         <div className="h-32"></div>
