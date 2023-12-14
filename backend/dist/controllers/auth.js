@@ -26,7 +26,7 @@ function signin(req, res, next) {
             }
             const foundUser = yield users_1.default.validateUserCredentials(email, password);
             if (!foundUser) {
-                return next(new CustomError_1.CustomError(400, "Invalid email or password"));
+                return next(new CustomError_1.CustomError(401, "Invalid email or password"));
             }
             const tokenData = createToken(foundUser);
             const cookie = createCookie(tokenData);

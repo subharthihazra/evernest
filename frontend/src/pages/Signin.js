@@ -1,9 +1,14 @@
 import React from "react";
 import * as Form from "@radix-ui/react-form";
 import { useNavigate } from "react-router";
+import axios from "axios";
+import { useQuery } from "@tanstack/react-query";
 
-function SignIn() {
+async function getUser() {}
+
+function Signin() {
   const navigate = useNavigate();
+  const { data: user, error, isLoading } = useQuery("postsData", retrievePosts);
 
   function navigateSignup(url) {
     navigate("/signup");
@@ -13,8 +18,25 @@ function SignIn() {
     navigate("/forgotpassword");
   }
 
-  function handleSubmit(e) {
+  async function handleSubmit(e) {
     e.preventDefault();
+    try {
+      const { data } = await axios.post("http://localhost:5000/auth/signin", {
+        email: e.target.email.value?.trim(),
+        password: e.target.password.value,
+      });
+      if (data?.success === true) {
+        console.log("Logged innnn");
+      } else {
+        console.log("Nottt innnn");
+      }
+    } catch (e) {
+      if (e.response?.status === 401) {
+        console.log(e.response?.data?.message);
+      } else {
+        console.log("Error: ", e.message);
+      }
+    }
   }
 
   return (
@@ -90,4 +112,4 @@ function SignIn() {
   );
 }
 
-export default SignIn;
+export default Signin;

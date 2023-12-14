@@ -14,7 +14,7 @@ export async function signin(req: Request, res: Response, next: NextFunction) {
     }
     const foundUser = await userModel.validateUserCredentials(email, password);
     if (!foundUser) {
-      return next(new CustomError(400, "Invalid email or password"));
+      return next(new CustomError(401, "Invalid email or password"));
     }
     const tokenData = createToken(foundUser);
     const cookie = createCookie(tokenData);

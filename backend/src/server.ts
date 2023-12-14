@@ -1,4 +1,5 @@
 import express, { Express, Request, Response } from "express";
+import cors from "cors";
 import cookieParser from "cookie-parser";
 import { SERVER_PORT } from "./config/env";
 import authRouter from "./routes/auth";
@@ -7,6 +8,8 @@ import connectDB from "./db/connect";
 
 const app: Express = express();
 
+// use CORS
+app.use(cors());
 // parse form data
 app.use(express.urlencoded({ extended: false }));
 // parse json
@@ -15,7 +18,7 @@ app.use(express.json());
 app.use(cookieParser());
 
 // Adding Auth Router
-app.use(authRouter);
+app.use("/auth", authRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
