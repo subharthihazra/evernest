@@ -3,6 +3,7 @@ import Header from "./components/Header";
 import { setColorMode } from "./colorMode";
 import FirstPage from "./pages/FirstPage";
 import Signin from "./pages/Signin";
+import Signup from "./pages/Signup";
 
 function App() {
   return (
@@ -13,6 +14,7 @@ function App() {
         <Routes>
           <Route path="/" element={<FirstPage />} />
           <Route path="/signin" element={<Signin />} />
+          <Route path="/signup" element={<Signup />} />
         </Routes>
       </BrowserRouter>
     </div>
