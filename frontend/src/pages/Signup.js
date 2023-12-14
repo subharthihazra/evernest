@@ -53,7 +53,7 @@ function Signup() {
   }
 
   return (
-    <div className="absolute top-1/2 sm:left-1/2 sm:translate-x-[-50%] translate-y-[-50%] text-base w-full">
+    <div className="text-base w-full my-6">
       <Form.Root
         className="w-auto sm:w-[350px] mx-3 sm:mx-auto p-6 rounded-xl flex flex-col gap-2 bg-[rgba(255,255,255,0.8)] dark:bg-[rgba(15,96,77,0.39)] shadow-[0_0_15px_3px_rgba(0,0,0,0.1),0_0_3px_1px_rgba(0,0,0,0.05)]"
         onSubmit={handleSubmit}
