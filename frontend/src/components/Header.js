@@ -136,7 +136,9 @@ function Searchbar({ searchbarRef, searchbarOpen }) {
         <input
           ref={searchbarRef}
           className="h-full w-full outline-none text-lg bg-transparent"
+          name="search"
           type="text"
+          autoComplete="off"
           id="search"
           placeholder="Explore Evernest ..."
         />
