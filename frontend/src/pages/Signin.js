@@ -3,6 +3,7 @@ import * as Form from "@radix-ui/react-form";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
+import * as EmailValidator from "email-validator";
 
 async function getUser({ email, password }) {
   return await axios.post("http://localhost:5000/auth/signin", {
@@ -59,7 +60,7 @@ function Signin() {
   return (
     <div className="text-base w-full my-6">
       <Form.Root
-        className="w-auto sm:w-[350px] mx-3 sm:mx-auto p-6 rounded-xl flex flex-col gap-2 bg-[rgba(255,255,255,0.8)] dark:bg-[rgba(15,96,77,0.39)] shadow-[0_0_15px_3px_rgba(0,0,0,0.1),0_0_3px_1px_rgba(0,0,0,0.05)]"
+        className="w-auto sm:w-[400px] mx-3 sm:mx-auto p-7 rounded-xl flex flex-col gap-2 bg-[rgba(255,255,255,0.8)] dark:bg-[rgba(54,54,54)] shadow-[0_0_15px_3px_rgba(0,0,0,0.1),0_0_3px_1px_rgba(0,0,0,0.05)]"
         onSubmit={handleSubmit}
       >
         <div className="text-center text-2xl">Sign in</div>
@@ -77,14 +78,14 @@ function Signin() {
             </Form.Message>
             <Form.Message
               className="text-[13px] opacity-[0.8]"
-              match="typeMismatch"
+              match={(value, formData) => !EmailValidator.validate(value)}
             >
               Provide a valid email
             </Form.Message>
           </div>
           <Form.Control asChild>
             <input
-              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-base leading-none shadow-[0_0_0_1px_rgba(0,0,0,0.5)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.5)] outline-none hover:shadow-[0_0_0_1px_black]  focus:shadow-[0_0_0_2px_black] dark:hover:shadow-[0_0_0_1px_white]  dark:focus:shadow-[0_0_0_2px_white] bg-white dark:bg-black transition-all"
+              className="box-border w-full inline-flex appearance-none items-center justify-center rounded-[4px] px-[12px] py-2 text-base leading-none shadow-[0_0_0_1px_rgba(0,0,0,0.5)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.5)] outline-none hover:shadow-[0_0_0_1px_black]  focus:shadow-[0_0_0_2px_black] dark:hover:shadow-[0_0_0_1px_white]  dark:focus:shadow-[0_0_0_2px_white] bg-white dark:bg-slate-900 transition-all"
               type="email"
               required
             />
@@ -103,14 +104,14 @@ function Signin() {
             </Form.Message>
             <Form.Message
               className="text-[13px] opacity-[0.8]"
-              match="typeMismatch"
+              match={(value, formData) => value.length < 6}
             >
-              Provide a valid password
+              Minimum password length 6
             </Form.Message>
           </div>
           <Form.Control asChild>
             <input
-              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-base leading-none shadow-[0_0_0_1px_rgba(0,0,0,0.5)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.5)] outline-none hover:shadow-[0_0_0_1px_black]  focus:shadow-[0_0_0_2px_black] dark:hover:shadow-[0_0_0_1px_white]  dark:focus:shadow-[0_0_0_2px_white] bg-white dark:bg-black transition-all"
+              className="box-border w-full inline-flex appearance-none items-center justify-center rounded-[4px] px-[12px] py-2 text-base leading-none shadow-[0_0_0_1px_rgba(0,0,0,0.5)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.5)] outline-none hover:shadow-[0_0_0_1px_black]  focus:shadow-[0_0_0_2px_black] dark:hover:shadow-[0_0_0_1px_white]  dark:focus:shadow-[0_0_0_2px_white] bg-white dark:bg-slate-900 transition-all"
               type="password"
               required
             />

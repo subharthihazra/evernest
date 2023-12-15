@@ -3,23 +3,41 @@ import * as Form from "@radix-ui/react-form";
 import { useNavigate } from "react-router";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
+import * as EmailValidator from "email-validator";
 
-async function getUser({ email, password }) {
+async function createUser({ name, email, password }) {
   return await axios.post("http://localhost:5000/auth/signup", {
+    name,
     email,
     password,
   });
+}
+
+function validatePassword(value) {
+  if (value.length < 6) {
+    return "LengthError";
+  }
+  if (!value.match(/[A-Za-z]/g)) {
+    return "CharReqError";
+  }
+  if (!value.match(/\d/g)) {
+    return "NumReqError";
+  }
+  if (!value.match(/[!@#$%^&*]/g)) {
+    return "SpecCharReqError";
+  }
+  return null;
 }
 
 function Signup() {
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState(null);
   const mutation = useMutation({
-    mutationFn: getUser,
+    mutationFn: createUser,
     onError: (error, variables, context) => {
-      if (error.response?.status === 401) {
+      if (error.response?.status === 400) {
         console.log(error.response?.data?.message);
-        setErrorMsg("Invalid Email or Password");
+        setErrorMsg("Email is already used! Try Signing in");
       } else {
         console.log("Error: ", error.message);
         setErrorMsg("Error Occurred");
@@ -28,7 +46,7 @@ function Signup() {
     onSuccess: (data, variables, context) => {
       if (data?.data?.success === true) {
         console.log("hoho");
-        navigateToPreviousPage();
+        navigateSignin();
       } else {
         setErrorMsg("Error Occurred");
       }
@@ -47,6 +65,7 @@ function Signup() {
   async function handleSubmit(e) {
     e.preventDefault();
     mutation.mutate({
+      name: e.target.name.value?.trim(),
       email: e.target.email.value?.trim(),
       password: e.target.password.value,
     });
@@ -55,7 +74,7 @@ function Signup() {
   return (
     <div className="text-base w-full my-6">
       <Form.Root
-        className="w-auto sm:w-[350px] mx-3 sm:mx-auto p-6 rounded-xl flex flex-col gap-2 bg-[rgba(255,255,255,0.8)] dark:bg-[rgba(15,96,77,0.39)] shadow-[0_0_15px_3px_rgba(0,0,0,0.1),0_0_3px_1px_rgba(0,0,0,0.05)]"
+        className="w-auto sm:w-[400px] mx-3 sm:mx-auto p-7 rounded-xl flex flex-col gap-2 bg-[rgba(255,255,255,0.8)] dark:bg-[rgba(54,54,54)] shadow-[0_0_15px_3px_rgba(0,0,0,0.1),0_0_3px_1px_rgba(0,0,0,0.05)]"
         onSubmit={handleSubmit}
       >
         <div className="text-center text-2xl">Sign up</div>
@@ -74,7 +93,7 @@ function Signup() {
           </div>
           <Form.Control asChild>
             <input
-              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-base leading-none shadow-[0_0_0_1px_rgba(0,0,0,0.5)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.5)] outline-none hover:shadow-[0_0_0_1px_black]  focus:shadow-[0_0_0_2px_black] dark:hover:shadow-[0_0_0_1px_white]  dark:focus:shadow-[0_0_0_2px_white] bg-white dark:bg-black transition-all"
+              className="box-border w-full inline-flex appearance-none items-center justify-center rounded-[4px] px-[12px] py-2 text-base leading-none shadow-[0_0_0_1px_rgba(0,0,0,0.5)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.5)] outline-none hover:shadow-[0_0_0_1px_black]  focus:shadow-[0_0_0_2px_black] dark:hover:shadow-[0_0_0_1px_white]  dark:focus:shadow-[0_0_0_2px_white] bg-white dark:bg-slate-900 transition-all"
               type="text"
               required
             />
@@ -94,14 +113,14 @@ function Signup() {
             </Form.Message>
             <Form.Message
               className="text-[13px] opacity-[0.8]"
-              match="typeMismatch"
+              match={(value, formData) => !EmailValidator.validate(value)}
             >
               Provide a valid email
             </Form.Message>
           </div>
           <Form.Control asChild>
             <input
-              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-base leading-none shadow-[0_0_0_1px_rgba(0,0,0,0.5)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.5)] outline-none hover:shadow-[0_0_0_1px_black]  focus:shadow-[0_0_0_2px_black] dark:hover:shadow-[0_0_0_1px_white]  dark:focus:shadow-[0_0_0_2px_white] bg-white dark:bg-black transition-all"
+              className="box-border w-full inline-flex appearance-none items-center justify-center rounded-[4px] px-[12px] py-2 text-base leading-none shadow-[0_0_0_1px_rgba(0,0,0,0.5)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.5)] outline-none hover:shadow-[0_0_0_1px_black]  focus:shadow-[0_0_0_2px_black] dark:hover:shadow-[0_0_0_1px_white]  dark:focus:shadow-[0_0_0_2px_white] bg-white dark:bg-slate-900 transition-all"
               type="email"
               required
             />
@@ -120,14 +139,40 @@ function Signup() {
             </Form.Message>
             <Form.Message
               className="text-[13px] opacity-[0.8]"
-              match="typeMismatch"
+              match={(value, formData) =>
+                validatePassword(value) === "LengthError"
+              }
             >
-              Provide a valid password
+              Minimum password length 6
+            </Form.Message>
+            <Form.Message
+              className="text-[13px] opacity-[0.8]"
+              match={(value, formData) =>
+                validatePassword(value) === "NumReqError"
+              }
+            >
+              Atleast a number required
+            </Form.Message>
+            <Form.Message
+              className="text-[13px] opacity-[0.8]"
+              match={(value, formData) =>
+                validatePassword(value) === "CharReqError"
+              }
+            >
+              Atleast a character required
+            </Form.Message>
+            <Form.Message
+              className="text-[13px] opacity-[0.8]"
+              match={(value, formData) =>
+                validatePassword(value) === "SpecCharReqError"
+              }
+            >
+              Atleast a special character required
             </Form.Message>
           </div>
           <Form.Control asChild>
             <input
-              className="box-border w-full inline-flex h-[35px] appearance-none items-center justify-center rounded-[4px] px-[10px] text-base leading-none shadow-[0_0_0_1px_rgba(0,0,0,0.5)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.5)] outline-none hover:shadow-[0_0_0_1px_black]  focus:shadow-[0_0_0_2px_black] dark:hover:shadow-[0_0_0_1px_white]  dark:focus:shadow-[0_0_0_2px_white] bg-white dark:bg-black transition-all"
+              className="box-border w-full inline-flex appearance-none items-center justify-center rounded-[4px] px-[12px] py-2 text-base leading-none shadow-[0_0_0_1px_rgba(0,0,0,0.5)] dark:shadow-[0_0_0_1px_rgba(255,255,255,0.5)] outline-none hover:shadow-[0_0_0_1px_black]  focus:shadow-[0_0_0_2px_black] dark:hover:shadow-[0_0_0_1px_white]  dark:focus:shadow-[0_0_0_2px_white] bg-white dark:bg-slate-900 transition-all"
               type="password"
               required
             />
