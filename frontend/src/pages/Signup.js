@@ -84,12 +84,7 @@ function Signup() {
             <Form.Label className="font-medium leading-[35px]">
               Full name
             </Form.Label>
-            <Form.Message
-              className="text-[13px] opacity-[0.8]"
-              match="valueMissing"
-            >
-              Enter your full name
-            </Form.Message>
+            <FormMessage match="valueMissing">Enter your full name</FormMessage>
           </div>
           <Form.Control asChild>
             <input
@@ -105,18 +100,12 @@ function Signup() {
             <Form.Label className="font-medium leading-[35px]">
               Email
             </Form.Label>
-            <Form.Message
-              className="text-[13px] opacity-[0.8]"
-              match="valueMissing"
-            >
-              Enter your email
-            </Form.Message>
-            <Form.Message
-              className="text-[13px] opacity-[0.8]"
+            <FormMessage match="valueMissing">Enter your email</FormMessage>
+            <FormMessage
               match={(value, formData) => !EmailValidator.validate(value)}
             >
               Provide a valid email
-            </Form.Message>
+            </FormMessage>
           </div>
           <Form.Control asChild>
             <input
@@ -131,44 +120,35 @@ function Signup() {
             <Form.Label className="font-medium leading-[35px]">
               Password
             </Form.Label>
-            <Form.Message
-              className="text-[13px] opacity-[0.8]"
-              match="valueMissing"
-            >
-              Enter your password
-            </Form.Message>
-            <Form.Message
-              className="text-[13px] opacity-[0.8]"
+            <FormMessage match="valueMissing">Enter your password</FormMessage>
+            <FormMessage
               match={(value, formData) =>
                 validatePassword(value) === "LengthError"
               }
             >
               Minimum password length 6
-            </Form.Message>
-            <Form.Message
-              className="text-[13px] opacity-[0.8]"
+            </FormMessage>
+            <FormMessage
               match={(value, formData) =>
                 validatePassword(value) === "NumReqError"
               }
             >
               Atleast a number required
-            </Form.Message>
-            <Form.Message
-              className="text-[13px] opacity-[0.8]"
+            </FormMessage>
+            <FormMessage
               match={(value, formData) =>
                 validatePassword(value) === "CharReqError"
               }
             >
               Atleast a character required
-            </Form.Message>
-            <Form.Message
-              className="text-[13px] opacity-[0.8]"
+            </FormMessage>
+            <FormMessage
               match={(value, formData) =>
                 validatePassword(value) === "SpecCharReqError"
               }
             >
-              Atleast a special character required
-            </Form.Message>
+              Atleast 1 of !@#$%^&* required
+            </FormMessage>
           </div>
           <Form.Control asChild>
             <input
@@ -194,6 +174,17 @@ function Signup() {
         </div>
       </Form.Root>
     </div>
+  );
+}
+
+function FormMessage({ children, className, ...props }) {
+  return (
+    <Form.Message
+      className={`text-[13px] opacity-[0.8] text-right ${className}`}
+      {...props}
+    >
+      {children}
+    </Form.Message>
   );
 }
 

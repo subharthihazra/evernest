@@ -4,6 +4,7 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import * as EmailValidator from "email-validator";
+import { useCookies } from "react-cookie";
 
 async function getUser({ email, password }) {
   return await axios.post("http://localhost:5000/auth/signin", {
@@ -29,6 +30,9 @@ function Signin() {
     onSuccess: (data, variables, context) => {
       if (data?.data?.success === true) {
         console.log("hoho");
+        console.log(data);
+        this.user_auth_token =
+          data.headers["set-cookie"][0].match(/token=(.+);/);
         navigateToPreviousPage();
       } else {
         setErrorMsg("Error Occurred");
@@ -70,18 +74,12 @@ function Signin() {
             <Form.Label className="font-medium leading-[35px]">
               Email
             </Form.Label>
-            <Form.Message
-              className="text-[13px] opacity-[0.8]"
-              match="valueMissing"
-            >
-              Enter your email
-            </Form.Message>
-            <Form.Message
-              className="text-[13px] opacity-[0.8]"
+            <FormMessage match="valueMissing">Enter your email</FormMessage>
+            <FormMessage
               match={(value, formData) => !EmailValidator.validate(value)}
             >
               Provide a valid email
-            </Form.Message>
+            </FormMessage>
           </div>
           <Form.Control asChild>
             <input
@@ -96,18 +94,10 @@ function Signin() {
             <Form.Label className="font-medium leading-[35px]">
               Password
             </Form.Label>
-            <Form.Message
-              className="text-[13px] opacity-[0.8]"
-              match="valueMissing"
-            >
-              Enter your password
-            </Form.Message>
-            <Form.Message
-              className="text-[13px] opacity-[0.8]"
-              match={(value, formData) => value.length < 6}
-            >
+            <FormMessage match="valueMissing">Enter your password</FormMessage>
+            <FormMessage match={(value, formData) => value.length < 6}>
               Minimum password length 6
-            </Form.Message>
+            </FormMessage>
           </div>
           <Form.Control asChild>
             <input
@@ -136,6 +126,17 @@ function Signin() {
         </div>
       </Form.Root>
     </div>
+  );
+}
+
+function FormMessage({ children, className, ...props }) {
+  return (
+    <Form.Message
+      className={`text-[13px] opacity-[0.8] text-right ${className}`}
+      {...props}
+    >
+      {children}
+    </Form.Message>
   );
 }
 
