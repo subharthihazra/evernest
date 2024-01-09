@@ -1,3 +1,5 @@
+import useAuth from "../components/useAuth";
+
 function FirstPage() {
   return (
     <>
@@ -11,6 +13,8 @@ function FirstPage() {
 }
 
 function HeroSection() {
+  const { isAuth, isLoading } = useAuth();
+
   return (
     <div className="hero-section grid grid-cols-1 grid-rows-2 h-[calc(100vh-128px)]">
       <div className="col-start-1 col-end-2 row-start-2 md:row-start-1 row-end-3 h-full flex">

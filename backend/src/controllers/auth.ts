@@ -8,13 +8,16 @@ import { DataStoredInToken, TokenData } from "../types/token";
 
 export async function signin(req: Request, res: Response, next: NextFunction) {
   try {
+    if (req.user) {
+      return next(new CustomError(400, "Already signed in"));
+    }
     let { email, password }: { email: string; password: string } = req.body;
     if (!(email && password)) {
       return next(new CustomError(400, "Not enough data provided"));
     }
     const foundUser = await userModel.validateUserCredentials(email, password);
     if (!foundUser) {
-      return next(new CustomError(400, "Invalid email or password"));
+      return next(new CustomError(401, "Invalid email or password"));
     }
     const tokenData = createToken(foundUser);
     const cookie = createCookie(tokenData);
@@ -30,6 +33,9 @@ export async function signin(req: Request, res: Response, next: NextFunction) {
 
 export async function signup(req: Request, res: Response, next: NextFunction) {
   try {
+    if (req.user) {
+      return next(new CustomError(400, "Already signed in"));
+    }
     const {
       email,
       password,
@@ -64,6 +70,16 @@ export async function signup(req: Request, res: Response, next: NextFunction) {
   }
 }
 
+export async function isAuth(req: Request, res: Response, next: NextFunction) {
+  try {
+    res
+      .status(201)
+      .json({ success: true, data: req.user, message: "authorized" });
+  } catch (err) {
+    next(err);
+  }
+}
+
 function createToken(user: User): TokenData {
   // console.log(user);
   const dataStoredInToken: DataStoredInToken = {
@@ -71,7 +87,7 @@ function createToken(user: User): TokenData {
     email: user.email,
   };
   const secretKey: string = String(JWT_SECRET_KEY);
-  const expiresIn: number = 60 * 60;
+  const expiresIn: number = 14 * 24 * 60 * 60;
 
   return {
     expiresIn,
@@ -80,7 +96,7 @@ function createToken(user: User): TokenData {
 }
 
 function createCookie(tokenData: TokenData): string {
-  return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
+  return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}; SameSite=None;  Secure`;
 }
 
 export async function logout(req: Request, res: Response, next: NextFunction) {

@@ -12,12 +12,12 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.isUserMidddleware = exports.verifyUserMidddleware = void 0;
+exports.isUserMiddleware = exports.verifyUserMiddleware = void 0;
 const jsonwebtoken_1 = require("jsonwebtoken");
 const env_1 = require("../config/env");
 const users_1 = __importDefault(require("../models/users"));
 const CustomError_1 = require("../errorhandlers/CustomError");
-function verifyUserMidddleware(req, res, next) {
+function verifyUserMiddleware(req, res, next) {
     var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -50,8 +50,8 @@ function verifyUserMidddleware(req, res, next) {
         }
     });
 }
-exports.verifyUserMidddleware = verifyUserMidddleware;
-function isUserMidddleware(req, res, next) {
+exports.verifyUserMiddleware = verifyUserMiddleware;
+function isUserMiddleware(req, res, next) {
     var _a, _b, _c;
     return __awaiter(this, void 0, void 0, function* () {
         try {
@@ -84,4 +84,4 @@ function isUserMidddleware(req, res, next) {
         }
     });
 }
-exports.isUserMidddleware = isUserMidddleware;
+exports.isUserMiddleware = isUserMiddleware;
