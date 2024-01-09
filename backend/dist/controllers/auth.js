@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.logout = exports.signup = exports.signin = void 0;
+exports.logout = exports.isAuth = exports.signup = exports.signin = void 0;
 const jsonwebtoken_1 = require("jsonwebtoken");
 const users_1 = __importDefault(require("../models/users"));
 const CustomError_1 = require("../errorhandlers/CustomError");
@@ -20,6 +20,9 @@ const env_1 = require("../config/env");
 function signin(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            if (req.user) {
+                return next(new CustomError_1.CustomError(400, "Already signed in"));
+            }
             let { email, password } = req.body;
             if (!(email && password)) {
                 return next(new CustomError_1.CustomError(400, "Not enough data provided"));
@@ -44,6 +47,9 @@ exports.signin = signin;
 function signup(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
+            if (req.user) {
+                return next(new CustomError_1.CustomError(400, "Already signed in"));
+            }
             const { email, password, name, } = req.body;
             if (!(email && password && name)) {
                 return next(new CustomError_1.CustomError(400, "Not enough data provided"));
@@ -77,6 +83,19 @@ function signup(req, res, next) {
     });
 }
 exports.signup = signup;
+function isAuth(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            res
+                .status(201)
+                .json({ success: true, data: req.user, message: "authorized" });
+        }
+        catch (err) {
+            next(err);
+        }
+    });
+}
+exports.isAuth = isAuth;
 function createToken(user) {
     // console.log(user);
     const dataStoredInToken = {
@@ -84,14 +103,14 @@ function createToken(user) {
         email: user.email,
     };
     const secretKey = String(env_1.JWT_SECRET_KEY);
-    const expiresIn = 60 * 60;
+    const expiresIn = 14 * 24 * 60 * 60;
     return {
         expiresIn,
         token: (0, jsonwebtoken_1.sign)(dataStoredInToken, secretKey, { expiresIn }),
     };
 }
 function createCookie(tokenData) {
-    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn};`;
+    return `Authorization=${tokenData.token}; HttpOnly; Max-Age=${tokenData.expiresIn}; SameSite=None;  Secure`;
 }
 function logout(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
