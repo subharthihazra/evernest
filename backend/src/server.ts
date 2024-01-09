@@ -3,13 +3,20 @@ import cors from "cors";
 import cookieParser from "cookie-parser";
 import { SERVER_PORT } from "./config/env";
 import authRouter from "./routes/auth";
+import adminRouter from "./routes/admin";
 import ErrorMiddleware from "./errorhandlers/ErrorMiddleware";
 import connectDB from "./db/connect";
 
 const app: Express = express();
 
 // use CORS
-app.use(cors());
+app.use(
+  cors({
+    origin: ["http://127.0.0.1:3000", "http://localhost:3000"],
+    credentials: true,
+    exposedHeaders: ["set-cookie"],
+  })
+);
 // parse form data
 app.use(express.urlencoded({ extended: false }));
 // parse json
@@ -19,6 +26,9 @@ app.use(cookieParser());
 
 // Adding Auth Router
 app.use("/auth", authRouter);
+
+// Adding Auth Router
+app.use("/admin", adminRouter);
 
 app.get("/", (req: Request, res: Response) => {
   res.send("Express + TypeScript Server");
