@@ -4,18 +4,28 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import * as EmailValidator from "email-validator";
-import { useCookies } from "react-cookie";
+import { useDispatch } from "react-redux";
+import { setUser } from "../redux/user";
+import useAuth from "../components/useAuth";
 
 async function getUser({ email, password }) {
-  return await axios.post("http://localhost:5000/auth/signin", {
-    email,
-    password,
-  });
+  return await axios.post(
+    "http://localhost:5000/auth/signin",
+    {
+      email,
+      password,
+    },
+    {
+      withCredentials: true,
+    }
+  );
 }
 
 function Signin() {
+  const { isAuth } = useAuth();
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState(null);
+  const dispatch = useDispatch();
   const mutation = useMutation({
     mutationFn: getUser,
     onError: (error, variables, context) => {
@@ -31,8 +41,8 @@ function Signin() {
       if (data?.data?.success === true) {
         console.log("hoho");
         console.log(data);
-        this.user_auth_token =
-          data.headers["set-cookie"][0].match(/token=(.+);/);
+        const { name } = data?.data?.data;
+        dispatch(setUser({ name: name }));
         navigateToPreviousPage();
       } else {
         setErrorMsg("Error Occurred");
@@ -51,6 +61,14 @@ function Signin() {
 
   function navigateForgotPassword() {
     navigate("/forgotpassword");
+  }
+
+  function navigateDashboard() {
+    navigate("/dashboard");
+  }
+
+  if (isAuth) {
+    navigateDashboard();
   }
 
   async function handleSubmit(e) {

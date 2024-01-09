@@ -4,13 +4,20 @@ import { useNavigate } from "react-router";
 import axios from "axios";
 import { useMutation } from "@tanstack/react-query";
 import * as EmailValidator from "email-validator";
+import useAuth from "../components/useAuth";
 
 async function createUser({ name, email, password }) {
-  return await axios.post("http://localhost:5000/auth/signup", {
-    name,
-    email,
-    password,
-  });
+  return await axios.post(
+    "http://localhost:5000/auth/signup",
+    {
+      name,
+      email,
+      password,
+    },
+    {
+      withCredentials: true,
+    }
+  );
 }
 
 function validatePassword(value) {
@@ -23,13 +30,14 @@ function validatePassword(value) {
   if (!value.match(/\d/g)) {
     return "NumReqError";
   }
-  if (!value.match(/[!@#$%^&*]/g)) {
+  if (!value.match(/[!@#$%^&*+-]/g)) {
     return "SpecCharReqError";
   }
   return null;
 }
 
 function Signup() {
+  const { isAuth } = useAuth();
   const navigate = useNavigate();
   const [errorMsg, setErrorMsg] = useState(null);
   const mutation = useMutation({
@@ -60,6 +68,14 @@ function Signup() {
 
   function navigateSignin() {
     navigate("/signin");
+  }
+
+  function navigateDashboard() {
+    navigate("/dashboard");
+  }
+
+  if (isAuth) {
+    navigateDashboard();
   }
 
   async function handleSubmit(e) {
@@ -147,7 +163,7 @@ function Signup() {
                 validatePassword(value) === "SpecCharReqError"
               }
             >
-              Atleast 1 of !@#$%^&* required
+              Atleast 1 of !@#$%^&*+- required
             </FormMessage>
           </div>
           <Form.Control asChild>
