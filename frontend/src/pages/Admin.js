@@ -84,6 +84,8 @@ function AddProduct() {
 
   const [rows, setRows] = useState([{ ...initRow, id: 1 }]);
 
+  const formRef = useRef(null);
+
   const handleAddRow = () => {
     const newRow = {
       ...initRow,
@@ -135,6 +137,7 @@ function AddProduct() {
     setProductDetails(null);
     setMainImage(null);
     setRows([{ ...initRow, id: 1 }]);
+    formRef.current.reset();
   };
 
   async function addProd() {
@@ -172,121 +175,125 @@ function AddProduct() {
       <p className="mb-5 text-mauve11 text-[15px] leading-normal">
         Make changes to your account here. Click save when you're done.
       </p>
-      <fieldset className="mb-[15px] w-full flex flex-col justify-start">
-        <label
-          className="text-[13px] leading-none mb-2.5 text-violet12 block"
-          htmlFor="name"
-        >
-          Product Name
-        </label>
-        <input
-          className="grow shrink-0 rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 h-[35px] focus:shadow-[0_0_0_2px] focus:shadow-violet8 outline-none"
-          id="productname"
-          onChange={(e) => setProductName(e.target.value)}
-        />
-      </fieldset>
-      <fieldset className="mb-[15px] w-full flex flex-col justify-start">
-        <label
-          className="text-[13px] leading-none mb-2.5 text-violet12 block"
-          htmlFor="details"
-        >
-          Details
-        </label>
-        <input
-          className="grow shrink-0 rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 h-[35px] focus:shadow-[0_0_0_2px] focus:shadow-violet8 outline-none"
-          id="details"
-          onChange={(e) => setProductDetails(e.target.value)}
-        />
-      </fieldset>
-      <fieldset>
-        <div className="mt-4">
-          <label className="block mb-2">Product Image</label>
-          <input
-            type="file"
-            onChange={handleMainImageChange}
-            className="p-2 border w-full"
-          />
-        </div>
-      </fieldset>
-      <div className="container mx-auto mt-8">
-        <table className="min-w-full">
-          <thead>
-            <tr>
-              <th className="border p-2">Size</th>
-              <th className="border p-2">Original Price</th>
-              <th className="border p-2">Current Price</th>
-              <th className="border p-2">Stock</th>
-              <th className="border p-2">Del</th>
-            </tr>
-          </thead>
-          <tbody>
-            {rows.map((row) => (
-              <tr key={row.id}>
-                <td className="border p-2">
-                  <select
-                    onChange={(e) => handleSizeChange(row.id, e.target.value)}
-                    className="p-2"
-                    defaultValue="-"
-                  >
-                    <option value="-">--</option>
-                    <option value="XS">XS</option>
-                    <option value="S">S</option>
-                    <option value="M">M</option>
-                    <option value="L">L</option>
-                    <option value="XL">XL</option>
-                    <option value="XXL">XXL</option>
-                    <option value="XXXL">XXXL</option>
-                  </select>
-                </td>
-                <td className="border p-2">
-                  <input
-                    type="number"
-                    value={row.originalPrice}
-                    onChange={(e) =>
-                      handleOriginalPriceChange(row.id, e.target.value)
-                    }
-                    className="p-2 border w-full"
-                    placeholder="Original Price"
-                  />
-                </td>
-                <td className="border p-2">
-                  <input
-                    type="number"
-                    value={row.currentPrice}
-                    onChange={(e) =>
-                      handleCurrentPriceChange(row.id, e.target.value)
-                    }
-                    className="p-2 border w-full"
-                    placeholder="Current Price"
-                  />
-                </td>
-                <td className="border p-2">
-                  <input
-                    type="number"
-                    value={row.stock}
-                    onChange={(e) => handleStockChange(row.id, e.target.value)}
-                    className="p-2 border w-full"
-                    placeholder="Stock"
-                  />
-                </td>
-                <td className="border p-2">
-                  <button onClick={() => delRow(row.id)}>X</button>
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-
-        <div className="mt-4">
-          <button
-            onClick={handleAddRow}
-            className="bg-green-500 text-white p-2"
+      <form ref={formRef} onSubmit={(e) => e.preventDefault()}>
+        <fieldset className="mb-[15px] w-full flex flex-col justify-start">
+          <label
+            className="text-[13px] leading-none mb-2.5 text-violet12 block"
+            htmlFor="name"
           >
-            Add More
-          </button>
+            Product Name
+          </label>
+          <input
+            className="grow shrink-0 rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 h-[35px] focus:shadow-[0_0_0_2px] focus:shadow-violet8 outline-none"
+            id="productname"
+            onChange={(e) => setProductName(e.target.value)}
+          />
+        </fieldset>
+        <fieldset className="mb-[15px] w-full flex flex-col justify-start">
+          <label
+            className="text-[13px] leading-none mb-2.5 text-violet12 block"
+            htmlFor="details"
+          >
+            Details
+          </label>
+          <input
+            className="grow shrink-0 rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 h-[35px] focus:shadow-[0_0_0_2px] focus:shadow-violet8 outline-none"
+            id="details"
+            onChange={(e) => setProductDetails(e.target.value)}
+          />
+        </fieldset>
+        <fieldset>
+          <div className="mt-4">
+            <label className="block mb-2">Product Image</label>
+            <input
+              type="file"
+              onChange={handleMainImageChange}
+              className="p-2 border w-full"
+            />
+          </div>
+        </fieldset>
+        <div className="container mx-auto mt-8">
+          <table className="min-w-full">
+            <thead>
+              <tr>
+                <th className="border p-2">Size</th>
+                <th className="border p-2">Original Price</th>
+                <th className="border p-2">Current Price</th>
+                <th className="border p-2">Stock</th>
+                <th className="border p-2">Del</th>
+              </tr>
+            </thead>
+            <tbody>
+              {rows.map((row) => (
+                <tr key={row.id}>
+                  <td className="border p-2">
+                    <select
+                      onChange={(e) => handleSizeChange(row.id, e.target.value)}
+                      className="p-2"
+                      defaultValue="-"
+                    >
+                      <option value="-">--</option>
+                      <option value="XS">XS</option>
+                      <option value="S">S</option>
+                      <option value="M">M</option>
+                      <option value="L">L</option>
+                      <option value="XL">XL</option>
+                      <option value="XXL">XXL</option>
+                      <option value="XXXL">XXXL</option>
+                    </select>
+                  </td>
+                  <td className="border p-2">
+                    <input
+                      type="number"
+                      value={row.originalPrice}
+                      onChange={(e) =>
+                        handleOriginalPriceChange(row.id, e.target.value)
+                      }
+                      className="p-2 border w-full"
+                      placeholder="Original Price"
+                    />
+                  </td>
+                  <td className="border p-2">
+                    <input
+                      type="number"
+                      value={row.currentPrice}
+                      onChange={(e) =>
+                        handleCurrentPriceChange(row.id, e.target.value)
+                      }
+                      className="p-2 border w-full"
+                      placeholder="Current Price"
+                    />
+                  </td>
+                  <td className="border p-2">
+                    <input
+                      type="number"
+                      value={row.stock}
+                      onChange={(e) =>
+                        handleStockChange(row.id, e.target.value)
+                      }
+                      className="p-2 border w-full"
+                      placeholder="Stock"
+                    />
+                  </td>
+                  <td className="border p-2">
+                    <button onClick={() => delRow(row.id)}>X</button>
+                  </td>
+                </tr>
+              ))}
+            </tbody>
+          </table>
+
+          <div className="mt-4">
+            <button
+              onClick={handleAddRow}
+              className="bg-green-500 text-white p-2"
+            >
+              Add More
+            </button>
+          </div>
         </div>
-      </div>
-      <input type="submit" onClick={addProd} value="Add New Product" />
+        <input type="submit" onClick={addProd} value="Add New Product" />
+      </form>
     </>
   );
 }
