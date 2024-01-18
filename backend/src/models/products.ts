@@ -1,17 +1,5 @@
 import { model, Schema, Document } from "mongoose";
-
-interface Product extends Document {
-  name: string;
-  description?: string;
-  variant: Variant[];
-}
-
-interface Variant {
-  size: "XS" | "S" | "M" | "L" | "XL" | "XXL" | "XXXL";
-  originalPrice: number;
-  currentPrice: number;
-  stock: number;
-}
+import { Product } from "types/product";
 
 const productSchema: Schema<Product> = new Schema({
   name: {

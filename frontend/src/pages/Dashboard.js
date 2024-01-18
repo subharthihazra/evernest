@@ -39,9 +39,12 @@ function LogoutUser() {
 function Dashboard() {
   const { isAuth, isLoading } = useAuth(true);
   return (
-    <div>
-      gog {isLoading ? "Loading ..." : isAuth ? <LogoutUser /> : "noauth"}
-    </div>
+    <>
+      <div className="h-[84px] sm:h-32"></div>
+      <div>
+        gog {isLoading ? "Loading ..." : isAuth ? <LogoutUser /> : "noauth"}
+      </div>
+    </>
   );
 }
 
