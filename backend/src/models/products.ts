@@ -9,6 +9,9 @@ const productSchema: Schema<Product> = new Schema({
   description: {
     type: String,
   },
+  imgUrl: {
+    type: String,
+  },
   variant: [
     {
       size: {

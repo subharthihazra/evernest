@@ -9,6 +9,9 @@ const productSchema = new mongoose_1.Schema({
     description: {
         type: String,
     },
+    imgUrl: {
+        type: String,
+    },
     variant: [
         {
             size: {
