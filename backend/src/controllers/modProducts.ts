@@ -49,10 +49,18 @@ export async function addProduct(
         stock: v.stock,
       })),
     });
-    console.log(result);
+    // console.log(result);
 
     await uploadImg(req?.files[0], async (url: any) => {
-      await productModel.updateOne({ _id: result._id }, { imgUrl: url });
+      const result2 = await productModel.updateOne(
+        { _id: result._id },
+        { imgUrl: url }
+      );
+      if (result?.length !== 0) {
+        res.status(201).json({ msg: "success" });
+      } else {
+        throw new CustomError(500, "Img store problem");
+      }
     });
   } catch (error) {}
 }

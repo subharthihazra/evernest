@@ -77,20 +77,17 @@ function AdminSignIn({ setIsAuth }) {
 function getProduct() {}
 
 function AddProduct() {
+  const initRow = { size: "--", originalPrice: "", currentPrice: "", stock: 0 };
   const [productName, setProductName] = useState(null);
   const [productDetails, setProductDetails] = useState(null);
   const [mainImage, setMainImage] = useState(null);
 
-  const [rows, setRows] = useState([
-    { id: 1, size: "--", originalPrice: "", currentPrice: "" },
-  ]);
+  const [rows, setRows] = useState([{ ...initRow, id: 1 }]);
 
   const handleAddRow = () => {
     const newRow = {
+      ...initRow,
       id: rows[rows.length - 1].id + 1,
-      size: "--",
-      originalPrice: "",
-      currentPrice: "",
     };
     setRows([...rows, newRow]);
   };
@@ -117,6 +114,12 @@ function AddProduct() {
     );
   };
 
+  const handleStockChange = (id, newStock) => {
+    setRows((prevRows) =>
+      prevRows.map((row) => (row.id === id ? { ...row, stock: newStock } : row))
+    );
+  };
+
   const delRow = (id) => {
     setRows((prevRows) => prevRows.filter((x) => x.id !== id));
   };
@@ -124,6 +127,14 @@ function AddProduct() {
   const handleMainImageChange = (event) => {
     const imageFile = event.target.files[0];
     setMainImage(imageFile);
+  };
+
+  const clearForm = () => {
+    console.log("ss");
+    setProductName(null);
+    setProductDetails(null);
+    setMainImage(null);
+    setRows([{ ...initRow, id: 1 }]);
   };
 
   async function addProd() {
@@ -148,6 +159,11 @@ function AddProduct() {
           },
         }
       );
+
+      if (data?.msg === "success") {
+        console.log("Uploaded");
+        clearForm();
+      }
     } catch (error) {}
   }
 
@@ -184,7 +200,7 @@ function AddProduct() {
       </fieldset>
       <fieldset>
         <div className="mt-4">
-          <label className="block mb-2">Main Image</label>
+          <label className="block mb-2">Product Image</label>
           <input
             type="file"
             onChange={handleMainImageChange}
@@ -199,6 +215,7 @@ function AddProduct() {
               <th className="border p-2">Size</th>
               <th className="border p-2">Original Price</th>
               <th className="border p-2">Current Price</th>
+              <th className="border p-2">Stock</th>
               <th className="border p-2">Del</th>
             </tr>
           </thead>
@@ -208,7 +225,7 @@ function AddProduct() {
                 <td className="border p-2">
                   <select
                     onChange={(e) => handleSizeChange(row.id, e.target.value)}
-                    className="p-2 w-full"
+                    className="p-2"
                     defaultValue="-"
                   >
                     <option value="-">--</option>
@@ -241,6 +258,15 @@ function AddProduct() {
                     }
                     className="p-2 border w-full"
                     placeholder="Current Price"
+                  />
+                </td>
+                <td className="border p-2">
+                  <input
+                    type="number"
+                    value={row.stock}
+                    onChange={(e) => handleStockChange(row.id, e.target.value)}
+                    className="p-2 border w-full"
+                    placeholder="Stock"
                   />
                 </td>
                 <td className="border p-2">

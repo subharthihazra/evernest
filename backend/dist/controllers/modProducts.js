@@ -58,9 +58,15 @@ function addProduct(req, res, next) {
                     stock: v.stock,
                 })),
             });
-            console.log(result);
+            // console.log(result);
             yield (0, uploadFile_1.uploadImg)(req === null || req === void 0 ? void 0 : req.files[0], (url) => __awaiter(this, void 0, void 0, function* () {
-                yield products_1.default.updateOne({ _id: result._id }, { imgUrl: url });
+                const result2 = yield products_1.default.updateOne({ _id: result._id }, { imgUrl: url });
+                if ((result === null || result === void 0 ? void 0 : result.length) !== 0) {
+                    res.status(201).json({ msg: "success" });
+                }
+                else {
+                    throw new CustomError_1.CustomError(500, "Img store problem");
+                }
             }));
         }
         catch (error) { }
