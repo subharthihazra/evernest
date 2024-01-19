@@ -213,12 +213,20 @@ function AddProduct() {
           />
         </fieldset>
         <fieldset>
-          <div className="mt-4">
+          <div className="mt-4 p-2 border">
             <label className="block mb-2">Product Image</label>
+            {mainImage && (
+              <img
+                src={URL.createObjectURL(mainImage)}
+                alt="Uploaded Preview"
+                style={{ maxWidth: "100%", maxHeight: "100px" }}
+                className="mb-2"
+              />
+            )}
             <input
               type="file"
               onChange={handleMainImageChange}
-              className="p-2 border w-full"
+              className="w-full"
             />
           </div>
         </fieldset>
@@ -309,13 +317,21 @@ function AddProduct() {
 }
 
 function UpdateProduct() {
+  const [prodId, setProdId] = useState(null);
   const [prodData, setProdData] = useState(null);
   const rows = prodData
-    ? prodData?.variant?.map((v, id) => ({ ...v, id }))
+    ? prodData?.variant?.map((v, id) => ({ ...v, id: id + 1 }))
     : null;
   const setRows = (r) => {
     if (r instanceof Function) {
-      setProdData((x) => ({ ...x, variant: r(prodData.variant) }));
+      setProdData((x) => {
+        let newR = r(rows).map((x) => {
+          let y = x;
+          delete y.id;
+          return y;
+        });
+        return { ...x, variant: newR };
+      });
     } else {
       setProdData((x) => ({ ...x, variant: r }));
     }
@@ -372,7 +388,10 @@ function UpdateProduct() {
   async function fetchProdFromId() {
     try {
       setIsLoading(true);
-      const prodId = prodIdInput.current.value;
+      formRef.current.reset();
+      setProdData(null);
+
+      setProdId(prodIdInput.current.value);
       if (!prodId || prodId?.trim() === "") return;
       const { data } = await axios.get(
         `http://localhost:5000/admin/product/id/${prodId?.trim()}`,
@@ -383,6 +402,40 @@ function UpdateProduct() {
       console.log(data);
       if (data?.msg === "success") {
         setProdData(data?.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  async function updateProdById() {
+    try {
+      setIsLoading(true);
+
+      if (!prodId || prodId?.trim() === "") return;
+      const { data } = await axios.patch(
+        `http://localhost:5000/admin/product/id/${prodId?.trim()}`,
+        mainImage
+          ? {
+              ...prodData,
+              mainImage,
+              id: prodId,
+            }
+          : { ...prodData, id: prodId },
+        {
+          withCredentials: true,
+          headers: mainImage
+            ? {
+                "Content-Type": "multipart/form-data",
+              }
+            : {},
+        }
+      );
+      console.log(data);
+      if (data?.msg === "success") {
+        fetchProdFromId();
       }
     } catch (error) {
       console.log(error);
@@ -447,7 +500,15 @@ function UpdateProduct() {
             </fieldset>
             <fieldset>
               <div className="mt-4">
-                <label className="block mb-2">Product Image</label>
+                <label className="block mb-2">Product Image</label>{" "}
+                <img
+                  src={
+                    mainImage ? URL.createObjectURL(mainImage) : prodData.imgUrl
+                  }
+                  alt="Uploaded Preview"
+                  style={{ maxWidth: "100%", maxHeight: "100px" }}
+                  className="mb-2"
+                />
                 <input
                   type="file"
                   onChange={handleMainImageChange}
@@ -490,7 +551,7 @@ function UpdateProduct() {
                       <td className="border p-2">
                         <input
                           type="number"
-                          value={row.originalPrice}
+                          defaultValue={row.originalPrice}
                           onChange={(e) =>
                             handleOriginalPriceChange(row.id, e.target.value)
                           }
@@ -501,7 +562,7 @@ function UpdateProduct() {
                       <td className="border p-2">
                         <input
                           type="number"
-                          value={row.currentPrice}
+                          defaultValue={row.currentPrice}
                           onChange={(e) =>
                             handleCurrentPriceChange(row.id, e.target.value)
                           }
@@ -512,7 +573,7 @@ function UpdateProduct() {
                       <td className="border p-2">
                         <input
                           type="number"
-                          value={row.stock}
+                          defaultValue={row.stock}
                           onChange={(e) =>
                             handleStockChange(row.id, e.target.value)
                           }

@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.addProduct = exports.getProductFromId = void 0;
+exports.updateProduct = exports.addProduct = exports.getProductFromId = void 0;
 const products_1 = __importDefault(require("../models/products"));
 const uploadFile_1 = require("./uploadFile");
 const CustomError_1 = require("../errorhandlers/CustomError");
@@ -81,3 +81,57 @@ function addProduct(req, res, next) {
     });
 }
 exports.addProduct = addProduct;
+function updateProduct(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { id, name, description, variant } = req.body;
+            if (!id || (id === null || id === void 0 ? void 0 : id.trim()) === "")
+                next(new CustomError_1.CustomError(400, "No product ID"));
+            if (!name || (name === null || name === void 0 ? void 0 : name.trim()) === "")
+                next(new CustomError_1.CustomError(400, "No product name"));
+            if (!description || (description === null || description === void 0 ? void 0 : description.trim()) === "")
+                next(new CustomError_1.CustomError(400, "No product details"));
+            const rowSet = new Set();
+            for (const sz of variant.map((x) => x === null || x === void 0 ? void 0 : x.size)) {
+                if (sz === "--")
+                    next(new CustomError_1.CustomError(400, "Err variant"));
+                if (rowSet.has(sz))
+                    next(new CustomError_1.CustomError(400, "Err variant"));
+                rowSet.add(sz);
+            }
+            const result = yield products_1.default.updateOne({ _id: id }, {
+                name: name,
+                description: description,
+                variant: variant.map((v) => ({
+                    size: v.size,
+                    originalPrice: v.originalPrice,
+                    currentPrice: v.currentPrice,
+                    stock: v.stock,
+                })),
+            });
+            if (!(result === null || result === void 0 ? void 0 : result.acknowledged)) {
+                next(new CustomError_1.CustomError(500, "data update failed"));
+            }
+            // console.log(result);
+            if (req === null || req === void 0 ? void 0 : req.files[0]) {
+                yield (0, uploadFile_1.uploadImg)(req === null || req === void 0 ? void 0 : req.files[0], (url) => __awaiter(this, void 0, void 0, function* () {
+                    const result2 = yield products_1.default.updateOne({ _id: result._id }, { imgUrl: url });
+                    // console.log(result2);
+                    if (result2 === null || result2 === void 0 ? void 0 : result2.acknowledged) {
+                        res.status(201).json({ msg: "success" });
+                    }
+                    else {
+                        next(new CustomError_1.CustomError(500, "Img store problem"));
+                    }
+                }));
+            }
+            else {
+                res.status(201).json({ msg: "success" });
+            }
+        }
+        catch (error) {
+            next(new CustomError_1.CustomError(500, "Server Error"));
+        }
+    });
+}
+exports.updateProduct = updateProduct;

@@ -73,3 +73,62 @@ export async function addProduct(
     next(new CustomError(500, "Server Error"));
   }
 }
+
+export async function updateProduct(
+  req: Request,
+  res: Response,
+  next: NextFunction
+) {
+  try {
+    const { id, name, description, variant } = req.body;
+    if (!id || id?.trim() === "") next(new CustomError(400, "No product ID"));
+    if (!name || name?.trim() === "")
+      next(new CustomError(400, "No product name"));
+    if (!description || description?.trim() === "")
+      next(new CustomError(400, "No product details"));
+
+    const rowSet = new Set();
+    for (const sz of variant.map((x: any) => x?.size)) {
+      if (sz === "--") next(new CustomError(400, "Err variant"));
+      if (rowSet.has(sz)) next(new CustomError(400, "Err variant"));
+      rowSet.add(sz);
+    }
+
+    const result: any = await productModel.updateOne(
+      { _id: id },
+      {
+        name: name,
+        description: description,
+        variant: variant.map((v: any) => ({
+          size: v.size,
+          originalPrice: v.originalPrice,
+          currentPrice: v.currentPrice,
+          stock: v.stock,
+        })),
+      }
+    );
+
+    if (!result?.acknowledged) {
+      next(new CustomError(500, "data update failed"));
+    }
+    // console.log(result);
+    if (req?.files[0]) {
+      await uploadImg(req?.files[0], async (url: any) => {
+        const result2: any = await productModel.updateOne(
+          { _id: result._id },
+          { imgUrl: url }
+        );
+        // console.log(result2);
+        if (result2?.acknowledged) {
+          res.status(201).json({ msg: "success" });
+        } else {
+          next(new CustomError(500, "Img store problem"));
+        }
+      });
+    } else {
+      res.status(201).json({ msg: "success" });
+    }
+  } catch (error) {
+    next(new CustomError(500, "Server Error"));
+  }
+}
