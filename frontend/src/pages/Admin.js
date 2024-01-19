@@ -2,6 +2,7 @@ import { useMutation } from "@tanstack/react-query";
 import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
 import * as Tabs from "@radix-ui/react-tabs";
+import { useSearchParams } from "react-router-dom";
 
 async function authAdmin({ username, password }) {
   return await axios.post(
@@ -84,6 +85,8 @@ function AddProduct() {
 
   const [rows, setRows] = useState([{ ...initRow, id: 1 }]);
 
+  const [lastId, setLastId] = useState(null);
+
   const formRef = useRef(null);
 
   const handleAddRow = () => {
@@ -154,7 +157,7 @@ function AddProduct() {
 
       const { data } = await axios.post(
         "http://localhost:5000/admin/product/upload",
-        { productName, productDetails, mainImage, varients: rows },
+        { productName, productDetails, mainImage, variant: rows },
         {
           withCredentials: true,
           headers: {
@@ -165,6 +168,8 @@ function AddProduct() {
 
       if (data?.msg === "success") {
         console.log("Uploaded");
+        console.log(data);
+        setLastId(data?.data?.id);
         clearForm();
       }
     } catch (error) {}
@@ -173,8 +178,13 @@ function AddProduct() {
   return (
     <>
       <p className="mb-5 text-mauve11 text-[15px] leading-normal">
-        Make changes to your account here. Click save when you're done.
+        Add a new Product.
       </p>
+      {lastId && (
+        <p className="mb-5 text-mauve11 text-[15px] leading-normal">
+          Last Added Product's Id: {lastId}
+        </p>
+      )}
       <form ref={formRef} onSubmit={(e) => e.preventDefault()}>
         <fieldset className="mb-[15px] w-full flex flex-col justify-start">
           <label
@@ -299,13 +309,23 @@ function AddProduct() {
 }
 
 function UpdateProduct() {
-  const [prodId, setProdId] = useState(null);
   const [prodData, setProdData] = useState(null);
+  const rows = prodData
+    ? prodData?.variant?.map((v, id) => ({ ...v, id }))
+    : null;
+  const setRows = (r) => {
+    if (r instanceof Function) {
+      setProdData((x) => ({ ...x, variant: r(prodData.variant) }));
+    } else {
+      setProdData((x) => ({ ...x, variant: r }));
+    }
+  };
   const isProd = prodData !== null;
-  const [rows, setRows] = useState([
-    { id: 1, size: "small", originalPrice: "", currentPrice: "" },
-  ]);
+  const [isLoading, setIsLoading] = useState(false);
+
   const prodIdInput = useRef(null);
+  const formRef = useRef(null);
+  const [mainImage, setMainImage] = useState(null);
 
   const handleAddRow = () => {
     const newRow = { id: Date.now(), size: "small", price: "" };
@@ -334,32 +354,47 @@ function UpdateProduct() {
     );
   };
 
+  const handleStockChange = (id, newStock) => {
+    setRows((prevRows) =>
+      prevRows.map((row) => (row.id === id ? { ...row, stock: newStock } : row))
+    );
+  };
+
   const delRow = (id) => {
     setRows((prevRows) => prevRows.filter((x) => x.id !== id));
   };
 
-  useEffect(() => {
-    async function fetchProdFromId() {
-      try {
-        if (!prodId || prodId?.trim() === "") return;
-        const { data } = await axios.get(
-          `http://localhost:5000/admin/id/${prodId?.trim()}`,
-          {
-            withCredentials: true,
-          }
-        );
-        if (data?.msg === "success") {
-          setProdData(data?.data);
+  const handleMainImageChange = (event) => {
+    const imageFile = event.target.files[0];
+    setMainImage(imageFile);
+  };
+
+  async function fetchProdFromId() {
+    try {
+      setIsLoading(true);
+      const prodId = prodIdInput.current.value;
+      if (!prodId || prodId?.trim() === "") return;
+      const { data } = await axios.get(
+        `http://localhost:5000/admin/product/id/${prodId?.trim()}`,
+        {
+          withCredentials: true,
         }
-      } catch (error) {}
+      );
+      console.log(data);
+      if (data?.msg === "success") {
+        setProdData(data?.data);
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
     }
-    fetchProdFromId();
-  }, [prodId]);
+  }
 
   return (
     <>
       <p className="mb-5 text-mauve11 text-[15px] leading-normal">
-        Make changes to your account here. Click save when you're done.
+        Change Current Products.
       </p>
 
       <div className="flex gap-2">
@@ -370,38 +405,56 @@ function UpdateProduct() {
           placeholder="Product Id"
         />
 
-        <button onClick={() => setProdId(prodIdInput.current.value?.trim())}>
-          Find
-        </button>
+        <button onClick={(e) => fetchProdFromId()}>Find</button>
       </div>
 
-      {isProd && (
+      {isLoading && <div>Loading ...</div>}
+
+      {!isLoading && isProd && (
         <>
-          <fieldset className="mb-[15px] w-full flex flex-col justify-start">
-            <label
-              className="text-[13px] leading-none mb-2.5 text-violet12 block"
-              htmlFor="name"
-            >
-              Product Name
-            </label>
-            <input
-              className="grow shrink-0 rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 h-[35px] focus:shadow-[0_0_0_2px] focus:shadow-violet8 outline-none"
-              id="productname"
-            />
-          </fieldset>
-          <fieldset className="mb-[15px] w-full flex flex-col justify-start">
-            <label
-              className="text-[13px] leading-none mb-2.5 text-violet12 block"
-              htmlFor="details"
-            >
-              Details
-            </label>
-            <input
-              className="grow shrink-0 rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 h-[35px] focus:shadow-[0_0_0_2px] focus:shadow-violet8 outline-none"
-              id="details"
-            />
-          </fieldset>
-          <fieldset>
+          <form ref={formRef} onSubmit={(e) => e.preventDefault()}>
+            <fieldset className="mb-[15px] w-full flex flex-col justify-start">
+              <label
+                className="text-[13px] leading-none mb-2.5 text-violet12 block"
+                htmlFor="name"
+              >
+                Product Name
+              </label>
+              <input
+                className="grow shrink-0 rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 h-[35px] focus:shadow-[0_0_0_2px] focus:shadow-violet8 outline-none"
+                id="productname"
+                defaultValue={prodData?.name}
+                onChange={(e) =>
+                  setProdData((p) => ({ ...p, name: e.target.value }))
+                }
+              />
+            </fieldset>
+            <fieldset className="mb-[15px] w-full flex flex-col justify-start">
+              <label
+                className="text-[13px] leading-none mb-2.5 text-violet12 block"
+                htmlFor="details"
+              >
+                Details
+              </label>
+              <input
+                className="grow shrink-0 rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 h-[35px] focus:shadow-[0_0_0_2px] focus:shadow-violet8 outline-none"
+                id="details"
+                defaultValue={prodData?.description}
+                onChange={(e) =>
+                  setProdData((p) => ({ ...p, description: e.target.value }))
+                }
+              />
+            </fieldset>
+            <fieldset>
+              <div className="mt-4">
+                <label className="block mb-2">Product Image</label>
+                <input
+                  type="file"
+                  onChange={handleMainImageChange}
+                  className="p-2 border w-full"
+                />
+              </div>
+            </fieldset>
             <div className="container mx-auto mt-8">
               <table className="min-w-full">
                 <thead>
@@ -409,21 +462,22 @@ function UpdateProduct() {
                     <th className="border p-2">Size</th>
                     <th className="border p-2">Original Price</th>
                     <th className="border p-2">Current Price</th>
+                    <th className="border p-2">Stock</th>
                     <th className="border p-2">Del</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {rows.map((row) => (
+                  {rows?.map((row) => (
                     <tr key={row.id}>
                       <td className="border p-2">
                         <select
-                          value={row.size}
                           onChange={(e) =>
                             handleSizeChange(row.id, e.target.value)
                           }
                           className="p-2"
+                          defaultValue={row.size}
                         >
-                          <option selected>--</option>
+                          <option value="-">--</option>
                           <option value="XS">XS</option>
                           <option value="S">S</option>
                           <option value="M">M</option>
@@ -456,6 +510,17 @@ function UpdateProduct() {
                         />
                       </td>
                       <td className="border p-2">
+                        <input
+                          type="number"
+                          value={row.stock}
+                          onChange={(e) =>
+                            handleStockChange(row.id, e.target.value)
+                          }
+                          className="p-2 border w-full"
+                          placeholder="Stock"
+                        />
+                      </td>
+                      <td className="border p-2">
                         <button onClick={() => delRow(row.id)}>X</button>
                       </td>
                     </tr>
@@ -472,7 +537,8 @@ function UpdateProduct() {
                 </button>
               </div>
             </div>
-          </fieldset>
+            {/* <input type="submit" onClick={addProd} value="Add New Product" /> */}
+          </form>
         </>
       )}
     </>
@@ -480,41 +546,43 @@ function UpdateProduct() {
 }
 
 function ModProducts() {
-  const [curtab, setCurtab] = useState(null);
+  const [searchParams, setSearchParams] = useSearchParams();
+  const curtab = searchParams.get("curtab");
   return (
     <div>
       <Tabs.Root
-        defaultValue="tab1"
+        defaultValue={curtab ? curtab : "addtab"}
+        onValueChange={(v) => setSearchParams({ curtab: v })}
         className="mt-5 lg:w-2/3 mx-3 lg:mx-auto rounded-xl bg-[rgba(255,255,255,0.8)] dark:bg-[rgba(54,54,54)] shadow-[0_0_15px_3px_rgba(0,0,0,0.1),0_0_3px_1px_rgba(0,0,0,0.05)] overflow-hidden"
       >
         <Tabs.List className="w-full border-slate-600 dark:border-black border-b-[1px]">
           <Tabs.Trigger
-            value="tab1"
+            value="addtab"
             className="py-2 px-4 data-[state=active]:bg-slate-200 dark:data-[state=active]:bg-zinc-600 rounded-lg m-2"
           >
             Add Product
           </Tabs.Trigger>
           <Tabs.Trigger
-            value="tab2"
+            value="updatetab"
             className="py-2 px-4 data-[state=active]:bg-slate-200 dark:data-[state=active]:bg-zinc-600 rounded-lg m-2"
           >
             Update Product
           </Tabs.Trigger>
           <Tabs.Trigger
-            value="tab3"
+            value="deltab"
             className="py-2 px-4 data-[state=active]:bg-slate-200 dark:data-[state=active]:bg-zinc-600 rounded-lg m-2"
           >
             Remove Product
           </Tabs.Trigger>
         </Tabs.List>
         <div className="m-2">
-          <Tabs.Content value="tab1">
+          <Tabs.Content value="addtab">
             <AddProduct />
           </Tabs.Content>
-          <Tabs.Content value="tab2">
+          <Tabs.Content value="updatetab">
             <UpdateProduct />
           </Tabs.Content>
-          <Tabs.Content value="tab3">del</Tabs.Content>
+          <Tabs.Content value="deltab">del</Tabs.Content>
         </div>
       </Tabs.Root>
     </div>
