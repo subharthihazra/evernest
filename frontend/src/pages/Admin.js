@@ -388,10 +388,11 @@ function UpdateProduct() {
   async function fetchProdFromId() {
     try {
       setIsLoading(true);
-      formRef.current.reset();
       setProdData(null);
+      setMainImage(null);
+      if (formRef.current) formRef.current.reset();
+      // console.log(formRef.current, formRef);
 
-      setProdId(prodIdInput.current.value);
       if (!prodId || prodId?.trim() === "") return;
       const { data } = await axios.get(
         `http://localhost:5000/admin/product/id/${prodId?.trim()}`,
@@ -409,6 +410,10 @@ function UpdateProduct() {
       setIsLoading(false);
     }
   }
+
+  useEffect(() => {
+    fetchProdFromId();
+  }, [prodId]);
 
   async function updateProdById() {
     try {
@@ -457,14 +462,20 @@ function UpdateProduct() {
           placeholder="Product Id"
         />
 
-        <button onClick={(e) => fetchProdFromId()}>Find</button>
+        <button onClick={() => setProdId(prodIdInput.current.value)}>
+          Find
+        </button>
       </div>
 
       {isLoading && <div>Loading ...</div>}
 
       {!isLoading && isProd && (
         <>
-          <form ref={formRef} onSubmit={(e) => e.preventDefault()}>
+          <form
+            ref={formRef}
+            onSubmit={(e) => e.preventDefault()}
+            className="mt-3"
+          >
             <fieldset className="mb-[15px] w-full flex flex-col justify-start">
               <label
                 className="text-[13px] leading-none mb-2.5 text-violet12 block"
@@ -597,7 +608,11 @@ function UpdateProduct() {
                 </button>
               </div>
             </div>
-            {/* <input type="submit" onClick={addProd} value="Add New Product" /> */}
+            <input
+              type="submit"
+              onClick={updateProdById}
+              value="Update Product"
+            />
           </form>
         </>
       )}

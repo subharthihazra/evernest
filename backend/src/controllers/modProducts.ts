@@ -114,7 +114,7 @@ export async function updateProduct(
       next(new CustomError(500, "data update failed"));
     }
     // console.log(result);
-    if (req?.files[0]) {
+    if (req?.files && req.files[0]) {
       await uploadImg(req?.files[0], async (url: any) => {
         const result2: any = await productModel.updateOne(
           { _id: prodId },
@@ -131,6 +131,7 @@ export async function updateProduct(
       res.status(201).json({ msg: "success" });
     }
   } catch (error) {
+    console.log(error);
     next(new CustomError(500, "Server Error"));
   }
 }

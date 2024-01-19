@@ -114,7 +114,7 @@ function updateProduct(req, res, next) {
                 next(new CustomError_1.CustomError(500, "data update failed"));
             }
             // console.log(result);
-            if (req === null || req === void 0 ? void 0 : req.files[0]) {
+            if ((req === null || req === void 0 ? void 0 : req.files) && req.files[0]) {
                 yield (0, uploadFile_1.uploadImg)(req === null || req === void 0 ? void 0 : req.files[0], (url) => __awaiter(this, void 0, void 0, function* () {
                     const result2 = yield products_1.default.updateOne({ _id: prodId }, { imgUrl: url });
                     // console.log(result2);
@@ -131,6 +131,7 @@ function updateProduct(req, res, next) {
             }
         }
         catch (error) {
+            console.log(error);
             next(new CustomError_1.CustomError(500, "Server Error"));
         }
     });

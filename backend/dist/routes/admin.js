@@ -15,4 +15,5 @@ router.use(verifyAdminMiddleware_1.verifyAdminMiddleware);
 router.post("/logout", admin_1.logout);
 router.get("/product/id/:prodId", modProducts_1.getProductFromId);
 router.post("/product/upload", upload.any(), modProducts_1.addProduct);
+router.patch("/product/id/:prodId", upload.any(), modProducts_1.updateProduct);
 exports.default = router;
