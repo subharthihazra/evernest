@@ -20,56 +20,64 @@ function getProductFromId(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
             const { prodId } = req.params;
-            const result = products_1.default.findOne({ _id: prodId });
-            if ((result === null || result === void 0 ? void 0 : result.length) === 0) {
-                return res.status(400).json({ msg: "notfound" });
+            const result = yield products_1.default.findOne({ _id: prodId });
+            if (!result || (result === null || result === void 0 ? void 0 : result.length) === 0) {
+                return res.status(200).json({ msg: "notfound" });
             }
             else {
                 return res.status(200).json({ msg: "success", data: result });
             }
         }
-        catch (error) { }
+        catch (error) {
+            return res.status(200).json({ msg: "notfound" });
+        }
     });
 }
 exports.getProductFromId = getProductFromId;
 function addProduct(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const { productName, productDetails, varients } = req.body;
+            const { productName, productDetails, variant } = req.body;
             if (!productName || (productName === null || productName === void 0 ? void 0 : productName.trim()) === "")
-                throw new CustomError_1.CustomError(400, "No product name");
+                next(new CustomError_1.CustomError(400, "No product name"));
             if (!productDetails || (productDetails === null || productDetails === void 0 ? void 0 : productDetails.trim()) === "")
-                throw new CustomError_1.CustomError(400, "No product details");
+                next(new CustomError_1.CustomError(400, "No product details"));
             const rowSet = new Set();
-            for (const sz of varients.map((x) => x === null || x === void 0 ? void 0 : x.size)) {
+            for (const sz of variant.map((x) => x === null || x === void 0 ? void 0 : x.size)) {
                 if (sz === "--")
-                    throw new CustomError_1.CustomError(400, "Err varients");
+                    next(new CustomError_1.CustomError(400, "Err variant"));
                 if (rowSet.has(sz))
-                    throw new CustomError_1.CustomError(400, "Err varients");
+                    next(new CustomError_1.CustomError(400, "Err variant"));
                 rowSet.add(sz);
             }
             const result = yield products_1.default.create({
                 name: productName,
                 description: productDetails,
-                variant: varients.map((v) => ({
+                variant: variant.map((v) => ({
                     size: v.size,
                     originalPrice: v.originalPrice,
                     currentPrice: v.currentPrice,
                     stock: v.stock,
                 })),
             });
+            if (!result || (result === null || result === void 0 ? void 0 : result.length) === 0) {
+                next(new CustomError_1.CustomError(500, "data add failed"));
+            }
             // console.log(result);
             yield (0, uploadFile_1.uploadImg)(req === null || req === void 0 ? void 0 : req.files[0], (url) => __awaiter(this, void 0, void 0, function* () {
                 const result2 = yield products_1.default.updateOne({ _id: result._id }, { imgUrl: url });
-                if ((result === null || result === void 0 ? void 0 : result.length) !== 0) {
-                    res.status(201).json({ msg: "success" });
+                // console.log(result2);
+                if (result2 === null || result2 === void 0 ? void 0 : result2.acknowledged) {
+                    res.status(201).json({ msg: "success", data: { id: result._id } });
                 }
                 else {
-                    throw new CustomError_1.CustomError(500, "Img store problem");
+                    next(new CustomError_1.CustomError(500, "Img store problem"));
                 }
             }));
         }
-        catch (error) { }
+        catch (error) {
+            next(new CustomError_1.CustomError(500, "Server Error"));
+        }
     });
 }
 exports.addProduct = addProduct;
