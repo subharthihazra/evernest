@@ -23,7 +23,14 @@ const connect_1 = __importDefault(require("./db/connect"));
 const app = (0, express_1.default)();
 // use CORS
 app.use((0, cors_1.default)({
-    origin: ["http://127.0.0.1:3000", "http://localhost:3000"],
+    origin: [
+        "http://127.0.0.1:3000",
+        "http://localhost:3000",
+        "https://evernest-backend.vercel.app/",
+        "http://evernest-backend.vercel.app/",
+        "https://evernest-backend.vercel.app",
+        "http://evernest-backend.vercel.app",
+    ],
     credentials: true,
     exposedHeaders: ["set-cookie"],
 }));
