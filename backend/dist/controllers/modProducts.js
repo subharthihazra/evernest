@@ -84,8 +84,9 @@ exports.addProduct = addProduct;
 function updateProduct(req, res, next) {
     return __awaiter(this, void 0, void 0, function* () {
         try {
-            const { id, name, description, variant } = req.body;
-            if (!id || (id === null || id === void 0 ? void 0 : id.trim()) === "")
+            const { prodId } = req.params;
+            const { name, description, variant } = req.body;
+            if (!prodId || (prodId === null || prodId === void 0 ? void 0 : prodId.trim()) === "")
                 next(new CustomError_1.CustomError(400, "No product ID"));
             if (!name || (name === null || name === void 0 ? void 0 : name.trim()) === "")
                 next(new CustomError_1.CustomError(400, "No product name"));
@@ -99,7 +100,7 @@ function updateProduct(req, res, next) {
                     next(new CustomError_1.CustomError(400, "Err variant"));
                 rowSet.add(sz);
             }
-            const result = yield products_1.default.updateOne({ _id: id }, {
+            const result = yield products_1.default.updateOne({ _id: prodId }, {
                 name: name,
                 description: description,
                 variant: variant.map((v) => ({
@@ -115,7 +116,7 @@ function updateProduct(req, res, next) {
             // console.log(result);
             if (req === null || req === void 0 ? void 0 : req.files[0]) {
                 yield (0, uploadFile_1.uploadImg)(req === null || req === void 0 ? void 0 : req.files[0], (url) => __awaiter(this, void 0, void 0, function* () {
-                    const result2 = yield products_1.default.updateOne({ _id: result._id }, { imgUrl: url });
+                    const result2 = yield products_1.default.updateOne({ _id: prodId }, { imgUrl: url });
                     // console.log(result2);
                     if (result2 === null || result2 === void 0 ? void 0 : result2.acknowledged) {
                         res.status(201).json({ msg: "success" });

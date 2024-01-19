@@ -421,9 +421,8 @@ function UpdateProduct() {
           ? {
               ...prodData,
               mainImage,
-              id: prodId,
             }
-          : { ...prodData, id: prodId },
+          : { ...prodData },
         {
           withCredentials: true,
           headers: mainImage

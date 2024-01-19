@@ -80,8 +80,10 @@ export async function updateProduct(
   next: NextFunction
 ) {
   try {
-    const { id, name, description, variant } = req.body;
-    if (!id || id?.trim() === "") next(new CustomError(400, "No product ID"));
+    const { prodId } = req.params;
+    const { name, description, variant } = req.body;
+    if (!prodId || prodId?.trim() === "")
+      next(new CustomError(400, "No product ID"));
     if (!name || name?.trim() === "")
       next(new CustomError(400, "No product name"));
     if (!description || description?.trim() === "")
@@ -95,7 +97,7 @@ export async function updateProduct(
     }
 
     const result: any = await productModel.updateOne(
-      { _id: id },
+      { _id: prodId },
       {
         name: name,
         description: description,
@@ -115,7 +117,7 @@ export async function updateProduct(
     if (req?.files[0]) {
       await uploadImg(req?.files[0], async (url: any) => {
         const result2: any = await productModel.updateOne(
-          { _id: result._id },
+          { _id: prodId },
           { imgUrl: url }
         );
         // console.log(result2);
