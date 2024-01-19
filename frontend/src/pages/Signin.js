@@ -10,7 +10,7 @@ import useAuth from "../components/useAuth";
 
 async function getUser({ email, password }) {
   return await axios.post(
-    "http://localhost:5000/auth/signin",
+    `${String(process.env.REACT_APP_BACKEND_URL)}/auth/signin`,
     {
       email,
       password,

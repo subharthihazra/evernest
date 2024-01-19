@@ -6,7 +6,7 @@ import { useSearchParams } from "react-router-dom";
 
 async function authAdmin({ username, password }) {
   return await axios.post(
-    "http://localhost:5000/admin/signin",
+    `${String(process.env.REACT_APP_BACKEND_URL)}/admin/signin`,
     {
       username,
       password,
@@ -156,7 +156,7 @@ function AddProduct() {
       }
 
       const { data } = await axios.post(
-        "http://localhost:5000/admin/product/upload",
+        `${String(process.env.REACT_APP_BACKEND_URL)}/admin/product/upload`,
         { productName, productDetails, mainImage, variant: rows },
         {
           withCredentials: true,
@@ -395,7 +395,9 @@ function UpdateProduct() {
 
       if (!prodId || prodId?.trim() === "") return;
       const { data } = await axios.get(
-        `http://localhost:5000/admin/product/id/${prodId?.trim()}`,
+        `${String(
+          process.env.REACT_APP_BACKEND_URL
+        )}/admin/product/id/${prodId?.trim()}`,
         {
           withCredentials: true,
         }
@@ -421,7 +423,9 @@ function UpdateProduct() {
 
       if (!prodId || prodId?.trim() === "") return;
       const { data } = await axios.patch(
-        `http://localhost:5000/admin/product/id/${prodId?.trim()}`,
+        `${String(
+          process.env.REACT_APP_BACKEND_URL
+        )}/admin/product/id/${prodId?.trim()}`,
         mainImage
           ? {
               ...prodData,

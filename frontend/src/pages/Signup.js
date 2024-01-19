@@ -8,7 +8,7 @@ import useAuth from "../components/useAuth";
 
 async function createUser({ name, email, password }) {
   return await axios.post(
-    "http://localhost:5000/auth/signup",
+    `${String(process.env.REACT_APP_BACKEND_URL)}/auth/signup`,
     {
       name,
       email,

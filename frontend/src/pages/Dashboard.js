@@ -13,7 +13,7 @@ function LogoutUser() {
   const mutation = useMutation({
     mutationFn: async () =>
       await axios.post(
-        "http://localhost:5000/auth/logout",
+        `${String(process.env.REACT_APP_BACKEND_URL)}/auth/logout`,
         {},
         {
           withCredentials: true,
