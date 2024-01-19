@@ -12,7 +12,14 @@ const app: Express = express();
 // use CORS
 app.use(
   cors({
-    origin: ["http://127.0.0.1:3000", "http://localhost:3000"],
+    origin: [
+      "http://127.0.0.1:3000",
+      "http://localhost:3000",
+      "https://evernest-backend.vercel.app/",
+      "http://evernest-backend.vercel.app/",
+      "https://evernest-backend.vercel.app",
+      "http://evernest-backend.vercel.app",
+    ],
     credentials: true,
     exposedHeaders: ["set-cookie"],
   })
