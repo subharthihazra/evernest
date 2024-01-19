@@ -11,13 +11,15 @@ export async function getProductFromId(
 ) {
   try {
     const { prodId } = req.params;
-    const result: any = productModel.findOne({ _id: prodId });
-    if (result?.length === 0) {
-      return res.status(400).json({ msg: "notfound" });
+    const result: any = await productModel.findOne({ _id: prodId });
+    if (!result || result?.length === 0) {
+      return res.status(200).json({ msg: "notfound" });
     } else {
       return res.status(200).json({ msg: "success", data: result });
     }
-  } catch (error) {}
+  } catch (error) {
+    return res.status(200).json({ msg: "notfound" });
+  }
 }
 
 export async function addProduct(
@@ -26,41 +28,48 @@ export async function addProduct(
   next: NextFunction
 ) {
   try {
-    const { productName, productDetails, varients } = req.body;
+    const { productName, productDetails, variant } = req.body;
     if (!productName || productName?.trim() === "")
-      throw new CustomError(400, "No product name");
+      next(new CustomError(400, "No product name"));
     if (!productDetails || productDetails?.trim() === "")
-      throw new CustomError(400, "No product details");
+      next(new CustomError(400, "No product details"));
 
     const rowSet = new Set();
-    for (const sz of varients.map((x: any) => x?.size)) {
-      if (sz === "--") throw new CustomError(400, "Err varients");
-      if (rowSet.has(sz)) throw new CustomError(400, "Err varients");
+    for (const sz of variant.map((x: any) => x?.size)) {
+      if (sz === "--") next(new CustomError(400, "Err variant"));
+      if (rowSet.has(sz)) next(new CustomError(400, "Err variant"));
       rowSet.add(sz);
     }
 
     const result: any = await productModel.create({
       name: productName,
       description: productDetails,
-      variant: varients.map((v: any) => ({
+      variant: variant.map((v: any) => ({
         size: v.size,
         originalPrice: v.originalPrice,
         currentPrice: v.currentPrice,
         stock: v.stock,
       })),
     });
+
+    if (!result || result?.length === 0) {
+      next(new CustomError(500, "data add failed"));
+    }
     // console.log(result);
 
     await uploadImg(req?.files[0], async (url: any) => {
-      const result2 = await productModel.updateOne(
+      const result2: any = await productModel.updateOne(
         { _id: result._id },
         { imgUrl: url }
       );
-      if (result?.length !== 0) {
-        res.status(201).json({ msg: "success" });
+      // console.log(result2);
+      if (result2?.acknowledged) {
+        res.status(201).json({ msg: "success", data: { id: result._id } });
       } else {
-        throw new CustomError(500, "Img store problem");
+        next(new CustomError(500, "Img store problem"));
       }
     });
-  } catch (error) {}
+  } catch (error) {
+    next(new CustomError(500, "Server Error"));
+  }
 }
