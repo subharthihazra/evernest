@@ -12,7 +12,6 @@ function App() {
     <div className="min-h-[100vh]">
       <BrowserRouter>
         <Header />
-        <div className="h-32"></div>
         <Routes>
           <Route path="/" element={<FirstPage />} />
           <Route path="/signin" element={<Signin />} />

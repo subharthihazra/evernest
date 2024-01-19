@@ -13,7 +13,7 @@ function LogoutUser() {
   const mutation = useMutation({
     mutationFn: async () =>
       await axios.post(
-        "http://localhost:5000/auth/logout",
+        `${String(process.env.REACT_APP_BACKEND_URL)}/auth/logout`,
         {},
         {
           withCredentials: true,
@@ -39,9 +39,12 @@ function LogoutUser() {
 function Dashboard() {
   const { isAuth, isLoading } = useAuth(true);
   return (
-    <div>
-      gog {isLoading ? "Loading ..." : isAuth ? <LogoutUser /> : "noauth"}
-    </div>
+    <>
+      <div className="h-[84px] sm:h-32"></div>
+      <div>
+        gog {isLoading ? "Loading ..." : isAuth ? <LogoutUser /> : "noauth"}
+      </div>
+    </>
   );
 }
 

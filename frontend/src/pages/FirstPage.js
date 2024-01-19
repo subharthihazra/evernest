@@ -4,6 +4,7 @@ function FirstPage() {
   return (
     <>
       <div>
+        <div className="h-32"></div>
         <HeroSection />
         <ProductShowcase />
       </div>

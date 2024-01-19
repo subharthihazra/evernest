@@ -7,7 +7,7 @@ import { useEffect, useState } from "react";
 
 async function getUser() {
   return await axios.post(
-    "http://localhost:5000/auth/isauth",
+    `${String(process.env.REACT_APP_BACKEND_URL)}/auth/isauth`,
     {},
     {
       withCredentials: true,
