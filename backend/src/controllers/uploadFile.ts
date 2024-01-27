@@ -25,8 +25,8 @@ export async function uploadImg(file: any, cb: Function) {
     },
     async (err, result: any) => {
       try {
-        //   console.log(result.url);
-        //   console.log(result);
+        // console.log(result);
+        // console.log(result.url);
         // console.log(
         //   imagekit.url({
         //     src: result.url,
@@ -38,7 +38,7 @@ export async function uploadImg(file: any, cb: Function) {
         //     ],
         //   })
         // );
-        cb(result?.url);
+        cb(result?.url, result?.fileId);
       } catch (err) {}
     }
   );
