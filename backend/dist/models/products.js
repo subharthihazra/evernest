@@ -12,6 +12,9 @@ const productSchema = new mongoose_1.Schema({
     imgUrl: {
         type: String,
     },
+    imgId: {
+        type: String,
+    },
     variant: [
         {
             size: {

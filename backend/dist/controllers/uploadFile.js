@@ -34,8 +34,8 @@ function uploadImg(file, cb) {
             tags: [mimeType],
         }, (err, result) => __awaiter(this, void 0, void 0, function* () {
             try {
-                //   console.log(result.url);
-                //   console.log(result);
+                // console.log(result);
+                // console.log(result.url);
                 // console.log(
                 //   imagekit.url({
                 //     src: result.url,
@@ -47,7 +47,7 @@ function uploadImg(file, cb) {
                 //     ],
                 //   })
                 // );
-                cb(result === null || result === void 0 ? void 0 : result.url);
+                cb(result === null || result === void 0 ? void 0 : result.url, result === null || result === void 0 ? void 0 : result.fileId);
             }
             catch (err) { }
         }));
