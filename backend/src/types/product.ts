@@ -2,6 +2,7 @@ export interface Product extends Document {
   name: string;
   description?: string;
   imgUrl?: string;
+  imgId?: string;
   variant: Variant[];
 }
 

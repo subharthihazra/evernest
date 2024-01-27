@@ -12,6 +12,9 @@ const productSchema: Schema<Product> = new Schema({
   imgUrl: {
     type: String,
   },
+  imgId: {
+    type: String,
+  },
   variant: [
     {
       size: {
