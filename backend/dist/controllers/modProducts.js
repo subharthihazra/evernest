@@ -65,7 +65,7 @@ function addProduct(req, res, next) {
             }
             // console.log(result);
             yield (0, uploadFile_1.uploadImg)(req === null || req === void 0 ? void 0 : req.files[0], (url, fileId) => __awaiter(this, void 0, void 0, function* () {
-                const result2 = yield products_1.default.updateOne({ _id: result._id }, { imgUrl: url, imageId: fileId });
+                const result2 = yield products_1.default.updateOne({ _id: result._id }, { imgUrl: url, imgId: fileId });
                 // console.log(result2);
                 if (result2 === null || result2 === void 0 ? void 0 : result2.acknowledged) {
                     res.status(201).json({ msg: "success", data: { id: result._id } });

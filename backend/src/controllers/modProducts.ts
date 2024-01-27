@@ -60,7 +60,7 @@ export async function addProduct(
     await uploadImg(req?.files[0], async (url: any, fileId: any) => {
       const result2: any = await productModel.updateOne(
         { _id: result._id },
-        { imgUrl: url, imageId: fileId }
+        { imgUrl: url, imgId: fileId }
       );
       // console.log(result2);
       if (result2?.acknowledged) {
