@@ -92,7 +92,7 @@ function AddProduct() {
   const handleAddRow = () => {
     const newRow = {
       ...initRow,
-      id: rows[rows.length - 1].id + 1,
+      id: rows.length === 0 ? 1 :rows[rows.length - 1].id + 1,
     };
     setRows([...rows, newRow]);
   };
@@ -342,6 +342,7 @@ function UpdateProduct() {
   const prodIdInput = useRef(null);
   const formRef = useRef(null);
   const [mainImage, setMainImage] = useState(null);
+  const [info, setInfo]  = useState(null);
 
   const handleAddRow = () => {
     const newRow = { id: Date.now(), size: "small", price: "" };
@@ -404,10 +405,14 @@ function UpdateProduct() {
       );
       console.log(data);
       if (data?.msg === "success") {
+        setInfo(null);
         setProdData(data?.data);
+      }else{
+        setInfo("Product Not Found!");
       }
     } catch (error) {
       console.log(error);
+      setInfo("Error Occurred!");
     } finally {
       setIsLoading(false);
     }
@@ -472,6 +477,8 @@ function UpdateProduct() {
       </div>
 
       {isLoading && <div>Loading ...</div>}
+
+      {!isLoading && info && <div>{info}</div>}
 
       {!isLoading && isProd && (
         <>
@@ -624,6 +631,161 @@ function UpdateProduct() {
   );
 }
 
+
+function RemoveProduct() {
+  const [prodId, setProdId] = useState(null);
+  const [prodData, setProdData] = useState(null);
+  const isProd = prodData !== null;
+  const [isLoading, setIsLoading] = useState(false);
+
+  const prodIdInput = useRef(null);
+  const formRef = useRef(null);
+  const [mainImage, setMainImage] = useState(null);
+  const [info, setInfo]  = useState(null);
+
+  async function fetchProdFromId() {
+    try {
+      setIsLoading(true);
+      setProdData(null);
+      setMainImage(null);
+      if (formRef.current) formRef.current.reset();
+      // console.log(formRef.current, formRef);
+
+      if (!prodId || prodId?.trim() === "") return;
+      const { data } = await axios.get(
+        `${String(
+          process.env.REACT_APP_BACKEND_URL
+        )}/admin/product/id/${prodId?.trim()}`,
+        {
+          withCredentials: true,
+        }
+      );
+      console.log(data);
+      if (data?.msg === "success") {
+        setInfo(null);
+        setProdData(data?.data);
+      }else{
+        setInfo("Product Not Found!");
+      }
+    } catch (error) {
+      console.log(error);
+      setInfo("Error Occurred!");
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  useEffect(() => {
+    fetchProdFromId();
+  }, [prodId]);
+
+  async function removeProdById() {
+    try {
+      setIsLoading(true);
+
+      if (!prodId || prodId?.trim() === "") return;
+      const { data } = await axios.delete(
+        `${String(
+          process.env.REACT_APP_BACKEND_URL
+        )}/admin/product/id/${prodId?.trim()}`,
+        {
+          withCredentials: true
+        }
+      );
+      console.log(data);
+      if (data?.msg === "success") {
+        fetchProdFromId();
+      }
+    } catch (error) {
+      console.log(error);
+    } finally {
+      setIsLoading(false);
+    }
+  }
+
+  return (
+    <>
+      <p className="mb-5 text-mauve11 text-[15px] leading-normal">
+        Remove Current Products.
+      </p>
+
+      <div className="flex gap-2">
+        <input
+          ref={prodIdInput}
+          className="grow shrink-0 rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 h-[35px] focus:shadow-[0_0_0_2px] focus:shadow-violet8 outline-none"
+          id="productid"
+          placeholder="Product Id"
+        />
+
+        <button onClick={() => setProdId(prodIdInput.current.value)}>
+          Find
+        </button>
+      </div>
+
+      {isLoading && <div>Loading ...</div>}
+      
+      {!isLoading && info && <div>{info}</div>}
+
+      {!isLoading && isProd && (
+        <>
+          <form
+            ref={formRef}
+            onSubmit={(e) => e.preventDefault()}
+            className="mt-3"
+          >
+            <fieldset className="mb-[15px] w-full flex flex-col justify-start">
+              <label
+                className="text-[13px] leading-none mb-2.5 text-violet12 block"
+                htmlFor="name"
+              >
+                Product Name
+              </label>
+              <input
+                className="grow shrink-0 rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 h-[35px] focus:shadow-[0_0_0_2px] focus:shadow-violet8 outline-none"
+                id="productname"
+                defaultValue={prodData?.name}
+                disabled={true}
+              />
+            </fieldset>
+            <fieldset className="mb-[15px] w-full flex flex-col justify-start">
+              <label
+                className="text-[13px] leading-none mb-2.5 text-violet12 block"
+                htmlFor="details"
+              >
+                Details
+              </label>
+              <input
+                className="grow shrink-0 rounded px-2.5 text-[15px] leading-none text-violet11 shadow-[0_0_0_1px] shadow-violet7 h-[35px] focus:shadow-[0_0_0_2px] focus:shadow-violet8 outline-none"
+                id="details"
+                defaultValue={prodData?.description}
+                disabled={true}
+              />
+            </fieldset>
+            <fieldset>
+              <div className="mt-4">
+                <label className="block mb-2">Product Image</label>{" "}
+                <img
+                  src={prodData.imgUrl}
+                  alt="Uploaded Preview"
+                  style={{ maxWidth: "100%", maxHeight: "100px" }}
+                  className="mb-2"
+                />
+              </div>
+            </fieldset>
+           
+            <input
+              type="submit"
+              onClick={removeProdById}
+              value="Remove Product"
+            />
+          </form>
+        </>
+      )}
+    </>
+  );
+}
+
+
 function ModProducts() {
   const [searchParams, setSearchParams] = useSearchParams();
   const curtab = searchParams.get("curtab");
@@ -661,7 +823,9 @@ function ModProducts() {
           <Tabs.Content value="updatetab">
             <UpdateProduct />
           </Tabs.Content>
-          <Tabs.Content value="deltab">del</Tabs.Content>
+          <Tabs.Content value="deltab">
+            <RemoveProduct />
+          </Tabs.Content>
         </div>
       </Tabs.Root>
     </div>

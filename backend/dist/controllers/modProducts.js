@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.updateProduct = exports.addProduct = exports.getProductFromId = void 0;
+exports.removeProduct = exports.updateProduct = exports.addProduct = exports.getProductFromId = void 0;
 const products_1 = __importDefault(require("../models/products"));
 const uploadFile_1 = require("./uploadFile");
 const CustomError_1 = require("../errorhandlers/CustomError");
@@ -137,3 +137,21 @@ function updateProduct(req, res, next) {
     });
 }
 exports.updateProduct = updateProduct;
+function removeProduct(req, res, next) {
+    return __awaiter(this, void 0, void 0, function* () {
+        try {
+            const { prodId } = req.params;
+            const result = yield products_1.default.deleteOne({ _id: prodId });
+            console.log("del:", result);
+            if (!result) {
+                next(new CustomError_1.CustomError(500, "data delete failed"));
+            }
+            res.status(201).json({ msg: "success" });
+        }
+        catch (error) {
+            console.log(error);
+            next(new CustomError_1.CustomError(500, "Server Error"));
+        }
+    });
+}
+exports.removeProduct = removeProduct;

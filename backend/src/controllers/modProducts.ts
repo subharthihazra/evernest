@@ -135,3 +135,27 @@ export async function updateProduct(
     next(new CustomError(500, "Server Error"));
   }
 }
+
+
+export async function removeProduct(
+  req: Request,
+  res: Response,
+  next: NextFunction
+){
+  try {
+    const { prodId } = req.params;
+
+    const result: any = await productModel.deleteOne({ _id: prodId });
+    console.log("del:",result);
+
+    if (!result) {
+      next(new CustomError(500, "data delete failed"));
+    }
+
+    res.status(201).json({ msg: "success" });
+
+  } catch (error) {
+    console.log(error);
+    next(new CustomError(500, "Server Error"));
+  }
+}

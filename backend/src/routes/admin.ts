@@ -4,6 +4,7 @@ import { verifyAdminMiddleware } from "../validations/verifyAdminMiddleware";
 import {
   addProduct,
   getProductFromId,
+  removeProduct,
   updateProduct,
 } from "../controllers/modProducts";
 import multer from "multer";
@@ -19,5 +20,6 @@ router.post("/logout", logout);
 router.get("/product/id/:prodId", getProductFromId);
 router.post("/product/upload", upload.any(), addProduct);
 router.patch("/product/id/:prodId", upload.any(), updateProduct);
+router.delete("/product/id/:prodId", removeProduct);
 
 export default router;
